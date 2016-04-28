@@ -44,7 +44,11 @@ namespace enigma_pro
 
             mListView = new DialogManager();
             if (mListView != null)
+            {
                 mListView.InitializeListView(this);
+                this.MaximizeBox = true;
+                this.FormBorderStyle = FormBorderStyle.Sizable;
+            }
         }
 
         private void deleteEntryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -70,7 +74,7 @@ namespace enigma_pro
                     LVItems.SubItems.Add("Title");
                     LVItems.SubItems.Add("Username");
                     LVItems.SubItems.Add("URL");
-                    
+
                     mListView.MLView.Items.Add(LVItems);
                 }
 

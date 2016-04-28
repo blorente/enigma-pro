@@ -117,7 +117,7 @@ namespace enigma_pro
             mColumnTitle.Width = 40;
             mColumnUsername.Text = "Username";
             MColumnURL.Text = "URL";
-            MColumnURL.Width = 550;
+            MColumnURL.Width = Window.Width - 188;
 
             MLView.Location = new Point(16, 30);
             MLView.Size = new Size(695, 460);
