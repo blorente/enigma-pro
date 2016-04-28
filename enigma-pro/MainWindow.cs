@@ -60,6 +60,8 @@ namespace enigma_pro
                     if (item.Selected)
                         mListView.MLView.Items.Remove(item);
                 }
+
+                mListView.FillListViewItemColors();
             }
         }
 
@@ -67,7 +69,7 @@ namespace enigma_pro
         {
             if (mListView != null)
             {
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 1000; i++)
                 {
                     ListViewItem LVItems = new ListViewItem(i.ToString());
 
@@ -76,22 +78,17 @@ namespace enigma_pro
                     LVItems.SubItems.Add("URL");
 
                     mListView.MLView.Items.Add(LVItems);
+                    mListView.MColumnURL.Width = -2;
                 }
 
-                for (int i = 0; i < mListView.MLView.Items.Count; i++)
-                {
-                    if (mListView.MLView.Items[i].Index % 2 == 0)
-                        mListView.MLView.Items[i].BackColor = Color.White;
-                    else
-                        mListView.MLView.Items[i].BackColor = Color.LightGray;
-                }
+                mListView.FillListViewItemColors();
             }
         }
 
         private void MainWindow_SizeChanged(object sender, EventArgs e)
         {
             if (mListView != null)
-                mListView.MColumnURL.Width = Width - 188;
+                mListView.MColumnURL.Width = -2;
         }
     }
 }

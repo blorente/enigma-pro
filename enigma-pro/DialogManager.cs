@@ -117,7 +117,7 @@ namespace enigma_pro
             mColumnTitle.Width = 40;
             mColumnUsername.Text = "Username";
             MColumnURL.Text = "URL";
-            MColumnURL.Width = Window.Width - 188;
+            MColumnURL.Width = -2;
 
             MLView.Location = new Point(16, 30);
             MLView.Size = new Size(695, 460);
@@ -133,6 +133,16 @@ namespace enigma_pro
             MLView.UseCompatibleStateImageBehavior = false;
 
             Window.Controls.Add(MLView);
+        }
+        public void FillListViewItemColors()
+        {
+            for (int i = 0; i < mLView.Items.Count; i++)
+            {
+                if (mLView.Items[i].Index % 2 == 0)
+                    mLView.Items[i].BackColor = Color.White;
+                else
+                    mLView.Items[i].BackColor = Color.LightGray;
+            }
         }
         private void OnLinkLblClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
