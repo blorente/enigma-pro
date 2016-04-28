@@ -57,7 +57,7 @@ namespace enigma_pro
 
         private void addNewEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 10; i++)
             {
                 ListViewItem LVItems = new ListViewItem(i.ToString());
 

@@ -10,7 +10,6 @@ namespace enigma_pro
 {
     public class DialogManager
     {
-        // Test
         private Label mLabel;
 
         // About-Dialog Components
