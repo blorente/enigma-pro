@@ -33,8 +33,13 @@ namespace enigma_pro
         }
         public ListView MLView
         {
-            get {  return mLView; }
-            set {  mLView = value;  }
+            get { return mLView; }
+            set { mLView = value; }
+        }
+        public ColumnHeader MColumnURL
+        {
+            get { return mColumnURL; }
+            set { mColumnURL = value; }
         }
 
         public void AddNewLabel(Form Window, Point Location, string Caption)
@@ -104,15 +109,15 @@ namespace enigma_pro
             mColumnID = new ColumnHeader();
             mColumnTitle = new ColumnHeader();
             mColumnUsername = new ColumnHeader();
-            mColumnURL = new ColumnHeader();
+            MColumnURL = new ColumnHeader();
 
             mColumnID.Text = "ID";
             mColumnID.Width = 40;
             mColumnTitle.Text = "Title";
             mColumnTitle.Width = 40;
             mColumnUsername.Text = "Username";
-            mColumnURL.Text = "URL";
-            mColumnURL.Width = 40;
+            MColumnURL.Text = "URL";
+            MColumnURL.Width = 550;
 
             MLView.Location = new Point(16, 30);
             MLView.Size = new Size(695, 460);
@@ -121,12 +126,12 @@ namespace enigma_pro
             mColumnID,
             mColumnTitle,
             mColumnUsername,
-            mColumnURL});
+            MColumnURL});
             MLView.View = View.Details;
             MLView.FullRowSelect = true;
             MLView.MultiSelect = true;
             MLView.UseCompatibleStateImageBehavior = false;
-            
+
             Window.Controls.Add(MLView);
         }
         private void OnLinkLblClicked(object sender, LinkLabelLinkClickedEventArgs e)
