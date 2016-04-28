@@ -49,23 +49,30 @@ namespace enigma_pro
 
         private void deleteEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (ListViewItem item in mListView.MLView.SelectedItems) { 
-                if (item.Selected)
-                    mListView.MLView.Items.Remove(item);
+            if (mListView != null)
+            {
+                foreach (ListViewItem item in mListView.MLView.SelectedItems)
+                {
+                    if (item.Selected)
+                        mListView.MLView.Items.Remove(item);
+                }
             }
         }
 
         private void addNewEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < 10; i++)
+            if (mListView != null)
             {
-                ListViewItem LVItems = new ListViewItem(i.ToString());
+                for (int i = 0; i < 10; i++)
+                {
+                    ListViewItem LVItems = new ListViewItem(i.ToString());
 
-                LVItems.SubItems.Add("Title");
-                LVItems.SubItems.Add("Username");
-                LVItems.SubItems.Add("URL");
+                    LVItems.SubItems.Add("Title");
+                    LVItems.SubItems.Add("Username");
+                    LVItems.SubItems.Add("URL");
 
-                mListView.MLView.Items.Add(LVItems);
+                    mListView.MLView.Items.Add(LVItems);
+                }
             }
         }
     }

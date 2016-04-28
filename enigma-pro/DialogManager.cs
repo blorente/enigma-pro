@@ -124,10 +124,9 @@ namespace enigma_pro
             mColumnURL});
             MLView.View = View.Details;
             MLView.FullRowSelect = true;
-            MLView.MultiSelect = false;
+            MLView.MultiSelect = true;
             MLView.UseCompatibleStateImageBehavior = false;
-
-            // Add Control to Form
+            
             Window.Controls.Add(MLView);
         }
         private void OnLinkLblClicked(object sender, LinkLabelLinkClickedEventArgs e)
