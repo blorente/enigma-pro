@@ -10,7 +10,22 @@ namespace enigma_pro
 {
     public class DialogManager
     {
-        private Label mLabel;
+        private Label mCustomLabel;
+
+        // Add / Edit Entry
+        private Form mEntryDlg;
+        private Label mTitleLbl;
+        private Label mUserNameLbl;
+        private Label mPasswordLbl;
+        private Label mPasswordRptLbl;
+        private Label mURLLbl;
+        private TextBox mTitleTBox;
+        private TextBox mUserNameTBox;
+        private TextBox mPasswordTBox;
+        private TextBox mPasswordRptTBox;
+        private TextBox mURLTBox;
+        private Button mAddEntryBtn;
+        private Button mCancelBtn;
 
         // About-Dialog Components
         private Form mAboutDlg;
@@ -28,8 +43,8 @@ namespace enigma_pro
 
         public Label MLabel
         {
-            get { return mLabel; }
-            set { mLabel = value; }
+            get { return mCustomLabel; }
+            set { mCustomLabel = value; }
         }
         public ListView MLView
         {
@@ -94,10 +109,13 @@ namespace enigma_pro
             mLinkLbl.LinkClicked += new LinkLabelLinkClickedEventHandler(OnLinkLblClicked);
 
             // Add Controls to Dialog
-            mAboutDlg.Controls.Add(mCloseBtn);
-            mAboutDlg.Controls.Add(mInfoLbl);
-            mAboutDlg.Controls.Add(mCaptionLbl);
-            mAboutDlg.Controls.Add(mLinkLbl);
+            mAboutDlg.Controls.AddRange(new Control[]
+            {
+                mCloseBtn,
+                mInfoLbl,
+                mCaptionLbl,
+                mLinkLbl
+            });
 
             // Display initial Dialog
             mAboutDlg.ShowDialog();
@@ -134,6 +152,104 @@ namespace enigma_pro
 
             Window.Controls.Add(MLView);
         }
+        public void InitializeAddNewEntry()
+        {
+            // Initialize Components
+            mEntryDlg = new Form();
+
+            mTitleLbl = new Label(); ;
+            mUserNameLbl = new Label();
+            mPasswordLbl = new Label();
+            mPasswordRptLbl = new Label();
+            mURLLbl = new Label();
+
+            mTitleTBox = new TextBox();
+            mUserNameTBox = new TextBox();
+            mPasswordTBox = new TextBox();
+            mPasswordRptTBox = new TextBox();
+            mURLTBox = new TextBox();
+
+            mAddEntryBtn = new Button();
+            mCancelBtn = new Button();
+
+            // Add Entry Dialog
+            mEntryDlg.Size = new Size(500, 240);
+            mEntryDlg.Text = "Add Entry";
+            mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
+            mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+            mEntryDlg.MaximizeBox = false;
+            mEntryDlg.MinimizeBox = false;
+
+            // Title Label
+            mTitleLbl.Location = new Point(5, 20);
+            mTitleLbl.Text = "Title:\t";
+
+            // Username Label
+            mUserNameLbl.Location = new Point(5, 50);
+            mUserNameLbl.Text = "Username:\t";
+
+            // Password Label
+            mPasswordLbl.Location = new Point(5, 80);
+            mPasswordLbl.Text = "Password:\t";
+
+            // Password Repeat Label
+            mPasswordRptLbl.Location = new Point(5, 110);
+            mPasswordRptLbl.Text = "Repeat:\t";
+
+            // URL Label
+            mURLLbl.Location = new Point(5, 140);
+            mURLLbl.Text = "URL:\t";
+
+            // Title TextBox
+            mTitleTBox.Location = new Point(120, 20);
+            mTitleTBox.Size = new Size(350, 20);
+
+            // Username TextBox
+            mUserNameTBox.Location = new Point(120, 50);
+            mUserNameTBox.Size = new Size(350, 20);
+
+            // Password TextBox
+            mPasswordTBox.Location = new Point(120, 80);
+            mPasswordTBox.Size = new Size(350, 20);
+            mPasswordTBox.UseSystemPasswordChar = true;
+
+            // Password Repeat TextBox
+            mPasswordRptTBox.Location = new Point(120, 110);
+            mPasswordRptTBox.Size = new Size(350, 20);
+            mPasswordRptTBox.UseSystemPasswordChar = true;
+
+            // URL TextBox
+            mURLTBox.Location = new Point(120, 140);
+            mURLTBox.Size = new Size(350, 20);
+
+            // Add Entry Button
+            mAddEntryBtn.Location = new Point(310, 170);
+            mAddEntryBtn.Text = "Add";
+            mAddEntryBtn.Click += new EventHandler(OnAddEntryBtnClicked);
+
+            // Cancel Button
+            mCancelBtn.Location = new Point(395, 170);
+            mCancelBtn.Text = "Cancel";
+            mCancelBtn.Click += new EventHandler(OnCancelEntryBtnClicked);
+
+            mEntryDlg.Controls.AddRange(new Control[]
+            {
+                mTitleLbl,
+                mUserNameLbl,
+                mPasswordLbl,
+                mPasswordRptLbl,
+                mURLLbl,
+                mTitleTBox,
+                mUserNameTBox,
+                mPasswordTBox,
+                mPasswordRptTBox,
+                mURLTBox,
+                mAddEntryBtn,
+                mCancelBtn
+            });
+
+            mEntryDlg.ShowDialog();
+        }
         public void FillListViewItemColors()
         {
             for (int i = 0; i < mLView.Items.Count; i++)
@@ -153,6 +269,14 @@ namespace enigma_pro
         private void OnCloseBtnClicked(object sender, EventArgs e)
         {
             mAboutDlg.Close();
+        }
+        private void OnCancelEntryBtnClicked(object sender, EventArgs e)
+        {
+            mEntryDlg.Close();
+        }
+        private void OnAddEntryBtnClicked(object sender, EventArgs e)
+        {
+            //TODO:
         }
     }
 }

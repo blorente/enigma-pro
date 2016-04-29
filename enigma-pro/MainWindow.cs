@@ -69,7 +69,8 @@ namespace enigma_pro
         {
             if (mListView != null)
             {
-                for (int i = 0; i < 1000; i++)
+                mListView.InitializeAddNewEntry();
+                for (int i = 0; i < 5; i++)
                 {
                     ListViewItem LVItems = new ListViewItem(i.ToString());
 
