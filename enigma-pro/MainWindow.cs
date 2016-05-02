@@ -39,6 +39,12 @@ namespace enigma_pro
 
         private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            addNewEntryToolStripMenuItem.Enabled = true;
+            deleteEntryToolStripMenuItem.Enabled = true;
+            copyUsernameToolStripMenuItem.Enabled = true;
+            copyPasswordToolStripMenuItem.Enabled = true;
+            openURLToolStripMenuItem.Enabled = true;
+
             newDatabaseToolStripMenuItem.Enabled = false;
             mDialog.MLabel.Hide();
 
@@ -68,22 +74,7 @@ namespace enigma_pro
         private void addNewEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (mListView != null)
-            {
                 mListView.InitializeAddNewEntry();
-                for (int i = 0; i < 5; i++)
-                {
-                    ListViewItem LVItems = new ListViewItem(i.ToString());
-
-                    LVItems.SubItems.Add("Title");
-                    LVItems.SubItems.Add("Username");
-                    LVItems.SubItems.Add("URL");
-
-                    mListView.MLView.Items.Add(LVItems);
-                    mListView.MColumnURL.Width = -2;
-                }
-
-                mListView.FillListViewItemColors();
-            }
         }
 
         private void MainWindow_SizeChanged(object sender, EventArgs e)

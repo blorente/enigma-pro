@@ -10,6 +10,10 @@ namespace enigma_pro
 {
     public class DialogManager
     {
+        private const int mMinimumColumnWidth = 60;
+        private static int mID;
+
+        // Add Label
         private Label mCustomLabel;
 
         // Add / Edit Entry
@@ -41,6 +45,11 @@ namespace enigma_pro
         private ColumnHeader mColumnUsername;
         private ColumnHeader mColumnURL;
 
+        public int MID
+        {
+            get { return mID; }
+            set { mID = value; }
+        }
         public Label MLabel
         {
             get { return mCustomLabel; }
@@ -57,6 +66,22 @@ namespace enigma_pro
             set { mColumnURL = value; }
         }
 
+        private void AddNewEntry(string Title, string Username, string URL)
+        {
+            ListViewItem LVItems = new ListViewItem(MID.ToString());
+            this.MID++;
+
+            LVItems.SubItems.Add(Title);
+            LVItems.SubItems.Add(Username);
+            LVItems.SubItems.Add(URL);
+
+            MLView.Items.Add(LVItems);
+            this.mColumnID.Width = -2;
+            this.mColumnTitle.Width = -2;
+            this.mColumnUsername.Width = -2;
+            this.MColumnURL.Width = -2;
+            this.FillListViewItemColors();
+        }
         public void AddNewLabel(Form Window, Point Location, string Caption)
         {
             MLabel = new Label();
@@ -80,10 +105,11 @@ namespace enigma_pro
             mAboutDlg.Size = new Size(320, 270);
             mAboutDlg.Text = "About enigma-pro";
             mAboutDlg.StartPosition = FormStartPosition.CenterScreen;
+            mAboutDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
             mAboutDlg.MaximizeBox = false;
             mAboutDlg.MinimizeBox = false;
             mAboutDlg.HelpButton = true;
-            mAboutDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+            mAboutDlg.CancelButton = mCloseBtn;
 
             // Close Button
             mCloseBtn.Location = new Point(220, 200);
@@ -129,6 +155,8 @@ namespace enigma_pro
             mColumnUsername = new ColumnHeader();
             MColumnURL = new ColumnHeader();
 
+            MLView.ColumnWidthChanged += new ColumnWidthChangedEventHandler(OnColumnWidthChanged);
+
             mColumnID.Text = "ID";
             mColumnID.Width = 40;
             mColumnTitle.Text = "Title";
@@ -140,11 +168,13 @@ namespace enigma_pro
             MLView.Location = new Point(16, 30);
             MLView.Size = new Size(695, 460);
             MLView.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right);
-            MLView.Columns.AddRange(new ColumnHeader[] {
-            mColumnID,
-            mColumnTitle,
-            mColumnUsername,
-            MColumnURL});
+            MLView.Columns.AddRange(new ColumnHeader[]
+            {
+                mColumnID,
+                mColumnTitle,
+                mColumnUsername,
+                MColumnURL
+            });
             MLView.View = View.Details;
             MLView.FullRowSelect = true;
             MLView.MultiSelect = true;
@@ -179,6 +209,8 @@ namespace enigma_pro
             mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
             mEntryDlg.MaximizeBox = false;
             mEntryDlg.MinimizeBox = false;
+            mEntryDlg.AcceptButton = mAddEntryBtn;
+            mEntryDlg.CancelButton = mCancelBtn;
 
             // Title Label
             mTitleLbl.Location = new Point(5, 20);
@@ -260,6 +292,11 @@ namespace enigma_pro
                     mLView.Items[i].BackColor = Color.LightGray;
             }
         }
+        private void OnColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
+        {
+            if (mLView.Columns[e.ColumnIndex].Width < mMinimumColumnWidth)
+                mLView.Columns[e.ColumnIndex].Width = mMinimumColumnWidth;
+        }
         private void OnLinkLblClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             // Open Github URL
@@ -276,7 +313,8 @@ namespace enigma_pro
         }
         private void OnAddEntryBtnClicked(object sender, EventArgs e)
         {
-            //TODO:
+            AddNewEntry(mTitleTBox.Text, mUserNameTBox.Text, mURLTBox.Text);
+            mEntryDlg.Close();
         }
     }
 }
