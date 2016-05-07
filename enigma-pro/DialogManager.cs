@@ -23,11 +23,13 @@ namespace enigma_pro
         private Label mPasswordLbl;
         private Label mPasswordRptLbl;
         private Label mURLLbl;
+        private Label mNotesLbl;
         private TextBox mTitleTBox;
         private TextBox mUserNameTBox;
         private TextBox mPasswordTBox;
         private TextBox mPasswordRptTBox;
         private TextBox mURLTBox;
+        private RichTextBox mNotesTBox;
         private Button mAddEntryBtn;
         private Button mCancelBtn;
 
@@ -43,7 +45,9 @@ namespace enigma_pro
         private ColumnHeader mColumnID;
         private ColumnHeader mColumnTitle;
         private ColumnHeader mColumnUsername;
+        private ColumnHeader mColumnPassword;
         private ColumnHeader mColumnURL;
+        private ColumnHeader mColumnNotes;
 
         public int MID
         {
@@ -60,27 +64,40 @@ namespace enigma_pro
             get { return mLView; }
             set { mLView = value; }
         }
-        public ColumnHeader MColumnURL
+        public ColumnHeader MColumnNotes
         {
-            get { return mColumnURL; }
-            set { mColumnURL = value; }
+            get {   return mColumnNotes; } 
+            set  {  mColumnNotes = value;  }
         }
 
-        private void AddNewEntry(string Title, string Username, string URL)
+        public static bool CheckURLValid(string URLInput)
         {
-            ListViewItem LVItems = new ListViewItem(MID.ToString());
-            this.MID++;
+            Uri uriResult;
+            return Uri.TryCreate(URLInput, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+        public void CopyUsernameToClipboard()
+        {
+            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
 
-            LVItems.SubItems.Add(Title);
-            LVItems.SubItems.Add(Username);
-            LVItems.SubItems.Add(URL);
+            foreach (ListViewItem item in selectedLVItem)
+                Clipboard.SetText(item.SubItems[2].Text);
+        }
+        public void CopyPasswordToClipboard()
+        {
+            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
 
-            MLView.Items.Add(LVItems);
-            this.mColumnID.Width = -2;
-            this.mColumnTitle.Width = -2;
-            this.mColumnUsername.Width = -2;
-            this.MColumnURL.Width = -2;
-            this.FillListViewItemColors();
+            foreach (ListViewItem item in selectedLVItem)
+                Clipboard.SetText(item.SubItems[3].Text);
+        }
+        public void OpenURL()
+        {
+            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
+
+            foreach (ListViewItem item in selectedLVItem)
+            {
+                if (CheckURLValid(item.SubItems[4].Text))
+                    System.Diagnostics.Process.Start(item.SubItems[4].Text);
+            }
         }
         public void AddNewLabel(Form Window, Point Location, string Caption)
         {
@@ -153,7 +170,9 @@ namespace enigma_pro
             mColumnID = new ColumnHeader();
             mColumnTitle = new ColumnHeader();
             mColumnUsername = new ColumnHeader();
-            MColumnURL = new ColumnHeader();
+            mColumnPassword = new ColumnHeader();
+            mColumnURL = new ColumnHeader();
+            MColumnNotes = new ColumnHeader();
 
             MLView.ColumnWidthChanged += new ColumnWidthChangedEventHandler(OnColumnWidthChanged);
 
@@ -162,18 +181,23 @@ namespace enigma_pro
             mColumnTitle.Text = "Title";
             mColumnTitle.Width = 40;
             mColumnUsername.Text = "Username";
-            MColumnURL.Text = "URL";
-            MColumnURL.Width = -2;
+            mColumnPassword.Text = "Password";
+            mColumnURL.Text = "URL";
+            mColumnURL.Width = 40;
+            MColumnNotes.Text = "Notes";
+            MColumnNotes.Width = -2;
 
-            MLView.Location = new Point(16, 30);
-            MLView.Size = new Size(695, 460);
+            MLView.Location = new Point(16, 15);
+            MLView.Size = new Size(695, 475);
             MLView.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right);
             MLView.Columns.AddRange(new ColumnHeader[]
             {
                 mColumnID,
                 mColumnTitle,
                 mColumnUsername,
-                MColumnURL
+                mColumnPassword,
+                mColumnURL,
+                MColumnNotes
             });
             MLView.View = View.Details;
             MLView.FullRowSelect = true;
@@ -192,18 +216,20 @@ namespace enigma_pro
             mPasswordLbl = new Label();
             mPasswordRptLbl = new Label();
             mURLLbl = new Label();
+            mNotesLbl = new Label();
 
             mTitleTBox = new TextBox();
             mUserNameTBox = new TextBox();
             mPasswordTBox = new TextBox();
             mPasswordRptTBox = new TextBox();
             mURLTBox = new TextBox();
+            mNotesTBox = new RichTextBox();
 
             mAddEntryBtn = new Button();
             mCancelBtn = new Button();
 
             // Add Entry Dialog
-            mEntryDlg.Size = new Size(500, 240);
+            mEntryDlg.Size = new Size(495, 350);
             mEntryDlg.Text = "Add Entry";
             mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
             mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -232,6 +258,10 @@ namespace enigma_pro
             mURLLbl.Location = new Point(5, 140);
             mURLLbl.Text = "URL:\t";
 
+            // Notes Label
+            mNotesLbl.Location = new Point(5, 170);
+            mNotesLbl.Text = "Notes:\t";
+
             // Title TextBox
             mTitleTBox.Location = new Point(120, 20);
             mTitleTBox.Size = new Size(350, 20);
@@ -254,13 +284,20 @@ namespace enigma_pro
             mURLTBox.Location = new Point(120, 140);
             mURLTBox.Size = new Size(350, 20);
 
+            // Notes RichTextBox
+            mNotesTBox.Location = new Point(120, 170);
+            mNotesTBox.Size = new Size(350, 100);
+            mNotesTBox.Multiline = true;
+            mNotesTBox.AcceptsTab = true;
+            mNotesTBox.WordWrap = true;
+
             // Add Entry Button
-            mAddEntryBtn.Location = new Point(310, 170);
+            mAddEntryBtn.Location = new Point(310, 280);
             mAddEntryBtn.Text = "Add";
             mAddEntryBtn.Click += new EventHandler(OnAddEntryBtnClicked);
 
             // Cancel Button
-            mCancelBtn.Location = new Point(395, 170);
+            mCancelBtn.Location = new Point(395, 280);
             mCancelBtn.Text = "Cancel";
             mCancelBtn.Click += new EventHandler(OnCancelEntryBtnClicked);
 
@@ -271,11 +308,13 @@ namespace enigma_pro
                 mPasswordLbl,
                 mPasswordRptLbl,
                 mURLLbl,
+                mNotesLbl,
                 mTitleTBox,
                 mUserNameTBox,
                 mPasswordTBox,
                 mPasswordRptTBox,
                 mURLTBox,
+                mNotesTBox,
                 mAddEntryBtn,
                 mCancelBtn
             });
@@ -313,8 +352,34 @@ namespace enigma_pro
         }
         private void OnAddEntryBtnClicked(object sender, EventArgs e)
         {
-            AddNewEntry(mTitleTBox.Text, mUserNameTBox.Text, mURLTBox.Text);
-            mEntryDlg.Close();
+            if (mPasswordTBox.Text == mPasswordRptTBox.Text)
+            {
+                AddNewEntry(mTitleTBox.Text, mUserNameTBox.Text, mPasswordTBox.Text, mURLTBox.Text, mNotesTBox.Text);
+                mEntryDlg.Close();
+            }
+            else
+                MessageBox.Show("Password and repeated password don't match!", this.mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        private void AddNewEntry(string Title, string Username, string Password, string URL, string Notes)
+        {
+            ListViewItem LVItems = new ListViewItem(MID.ToString());
+            this.MID++;
+
+            LVItems.SubItems.Add(Title);
+            LVItems.SubItems.Add(Username);
+            LVItems.SubItems.Add(Password);
+            LVItems.SubItems.Add(URL);
+            LVItems.SubItems.Add(Notes);
+
+            MLView.Items.Add(LVItems);
+
+            this.mColumnID.Width = -2;
+            this.mColumnTitle.Width = -2;
+            this.mColumnUsername.Width = -2;
+            this.mColumnPassword.Width = -2;
+            this.mColumnURL.Width = -2;
+            this.mColumnNotes.Width = -2;
+            this.FillListViewItemColors();
         }
     }
 }

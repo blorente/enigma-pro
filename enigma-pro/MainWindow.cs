@@ -37,26 +37,6 @@ namespace enigma_pro
             Close();
         }
 
-        private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            addNewEntryToolStripMenuItem.Enabled = true;
-            deleteEntryToolStripMenuItem.Enabled = true;
-            copyUsernameToolStripMenuItem.Enabled = true;
-            copyPasswordToolStripMenuItem.Enabled = true;
-            openURLToolStripMenuItem.Enabled = true;
-
-            newDatabaseToolStripMenuItem.Enabled = false;
-            mDialog.MLabel.Hide();
-
-            mListView = new DialogManager();
-            if (mListView != null)
-            {
-                mListView.InitializeListView(this);
-                this.MaximizeBox = true;
-                this.FormBorderStyle = FormBorderStyle.Sizable;
-            }
-        }
-
         private void deleteEntryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (mListView != null)
@@ -80,7 +60,101 @@ namespace enigma_pro
         private void MainWindow_SizeChanged(object sender, EventArgs e)
         {
             if (mListView != null)
-                mListView.MColumnURL.Width = -2;
+                mListView.MColumnNotes.Width = -2;
+        }
+
+        private void copyUsernameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null)
+                mListView.CopyUsernameToClipboard();
+        }
+
+        private void openURLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null)
+                mListView.OpenURL();
+        }
+
+        private void copyPasswordToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null)
+                mListView.CopyPasswordToClipboard();
+        }
+
+        private void newDBMenuItem_Click(object sender, EventArgs e)
+        {
+            addEntryMenuItem.Enabled = true;
+            editViewEntryMenuItem.Enabled = true;
+            delEntryMenuItem.Enabled = true;
+            cpUsernameMenuItem.Enabled = true;
+            cpPasswordMenuItem.Enabled = true;
+            openURLMenuItem.Enabled = true;
+
+            newDBMenuItem.Enabled = false;
+            mDialog.MLabel.Hide();
+
+            mListView = new DialogManager();
+            if (mListView != null)
+            {
+                mListView.InitializeListView(this);
+                this.MaximizeBox = true;
+                this.FormBorderStyle = FormBorderStyle.Sizable;
+            }
+        }
+
+        private void quitMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void addEntryMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null)
+                mListView.InitializeAddNewEntry();
+        }
+
+        private void editViewEntryMenuItem_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void delEntryMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null)
+            {
+                foreach (ListViewItem item in mListView.MLView.SelectedItems)
+                {
+                    if (item.Selected)
+                        mListView.MLView.Items.Remove(item);
+                }
+
+                mListView.FillListViewItemColors();
+            }
+        }
+
+        private void cpUsernameMenuItem_Click(object sender, EventArgs e)
+        {
+            if(mListView != null)
+                mListView.CopyUsernameToClipboard();
+        }
+
+        private void cpPasswordMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null)
+                mListView.CopyPasswordToClipboard();
+        }
+
+        private void openURLMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null)
+                mListView.OpenURL();
+        }
+
+        private void aboutMenuItem_Click(object sender, EventArgs e)
+        {
+            mAboutDlg = new DialogManager();
+            if (mAboutDlg != null)
+                mAboutDlg.InitializeAboutDialog();
         }
     }
 }

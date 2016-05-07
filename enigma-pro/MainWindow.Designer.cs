@@ -28,231 +28,240 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.menu = new System.Windows.Forms.MenuStrip();
-            this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.changeMasterKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToCSVFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.entriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addNewEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyUsernameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyPasswordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openURLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menu.SuspendLayout();
+            this.components = new System.ComponentModel.Container();
+            this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
+            this.dbMenuItem = new System.Windows.Forms.MenuItem();
+            this.newDBMenuItem = new System.Windows.Forms.MenuItem();
+            this.openDBMenuItem = new System.Windows.Forms.MenuItem();
+            this.closeDBMenuItem = new System.Windows.Forms.MenuItem();
+            this.menuItem4 = new System.Windows.Forms.MenuItem();
+            this.saveDBMenuItem = new System.Windows.Forms.MenuItem();
+            this.saveAsDBMenuItem = new System.Windows.Forms.MenuItem();
+            this.menuItem8 = new System.Windows.Forms.MenuItem();
+            this.changeMasterKeyMenuItem = new System.Windows.Forms.MenuItem();
+            this.exportToCSVFileMenuItem = new System.Windows.Forms.MenuItem();
+            this.menuItem11 = new System.Windows.Forms.MenuItem();
+            this.quitMenuItem = new System.Windows.Forms.MenuItem();
+            this.entriesMenuItem = new System.Windows.Forms.MenuItem();
+            this.addEntryMenuItem = new System.Windows.Forms.MenuItem();
+            this.editViewEntryMenuItem = new System.Windows.Forms.MenuItem();
+            this.delEntryMenuItem = new System.Windows.Forms.MenuItem();
+            this.menuItem17 = new System.Windows.Forms.MenuItem();
+            this.cpUsernameMenuItem = new System.Windows.Forms.MenuItem();
+            this.cpPasswordMenuItem = new System.Windows.Forms.MenuItem();
+            this.openURLMenuItem = new System.Windows.Forms.MenuItem();
+            this.helpMenuItem = new System.Windows.Forms.MenuItem();
+            this.aboutMenuItem = new System.Windows.Forms.MenuItem();
             this.SuspendLayout();
             // 
-            // menu
+            // mainMenu
             // 
-            this.menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.databaseToolStripMenuItem,
-            this.entriesToolStripMenuItem,
-            this.helpToolStripMenuItem});
-            this.menu.Location = new System.Drawing.Point(0, 0);
-            this.menu.Name = "menu";
-            this.menu.Size = new System.Drawing.Size(725, 24);
-            this.menu.TabIndex = 0;
-            this.menu.Text = "menuStrip1";
+            this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.dbMenuItem,
+            this.entriesMenuItem,
+            this.helpMenuItem});
             // 
-            // databaseToolStripMenuItem
+            // dbMenuItem
             // 
-            this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newDatabaseToolStripMenuItem,
-            this.openDatabaseToolStripMenuItem,
-            this.saveDatabaseToolStripMenuItem,
-            this.saveAsToolStripMenuItem,
-            this.deleteDatabaseToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.changeMasterKeyToolStripMenuItem,
-            this.exportToCSVFileToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.quitToolStripMenuItem});
-            this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.databaseToolStripMenuItem.Text = "Database";
+            this.dbMenuItem.Index = 0;
+            this.dbMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.newDBMenuItem,
+            this.openDBMenuItem,
+            this.closeDBMenuItem,
+            this.menuItem4,
+            this.saveDBMenuItem,
+            this.saveAsDBMenuItem,
+            this.menuItem8,
+            this.changeMasterKeyMenuItem,
+            this.exportToCSVFileMenuItem,
+            this.menuItem11,
+            this.quitMenuItem});
+            this.dbMenuItem.Text = "Database";
             // 
-            // newDatabaseToolStripMenuItem
+            // newDBMenuItem
             // 
-            this.newDatabaseToolStripMenuItem.Name = "newDatabaseToolStripMenuItem";
-            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.newDatabaseToolStripMenuItem.Text = "New database";
-            this.newDatabaseToolStripMenuItem.Click += new System.EventHandler(this.newDatabaseToolStripMenuItem_Click);
+            this.newDBMenuItem.Index = 0;
+            this.newDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlN;
+            this.newDBMenuItem.Text = "New Database";
+            this.newDBMenuItem.Click += new System.EventHandler(this.newDBMenuItem_Click);
             // 
-            // openDatabaseToolStripMenuItem
+            // openDBMenuItem
             // 
-            this.openDatabaseToolStripMenuItem.Name = "openDatabaseToolStripMenuItem";
-            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.openDatabaseToolStripMenuItem.Text = "Open database";
+            this.openDBMenuItem.Index = 1;
+            this.openDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
+            this.openDBMenuItem.Text = "Open Database";
             // 
-            // saveDatabaseToolStripMenuItem
+            // closeDBMenuItem
             // 
-            this.saveDatabaseToolStripMenuItem.Name = "saveDatabaseToolStripMenuItem";
-            this.saveDatabaseToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.saveDatabaseToolStripMenuItem.Text = "Save database";
+            this.closeDBMenuItem.Index = 2;
+            this.closeDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlW;
+            this.closeDBMenuItem.Text = "Close";
             // 
-            // saveAsToolStripMenuItem
+            // menuItem4
             // 
-            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.saveAsToolStripMenuItem.Text = "Save database as";
+            this.menuItem4.Index = 3;
+            this.menuItem4.Text = "-";
             // 
-            // deleteDatabaseToolStripMenuItem
+            // saveDBMenuItem
             // 
-            this.deleteDatabaseToolStripMenuItem.Name = "deleteDatabaseToolStripMenuItem";
-            this.deleteDatabaseToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.deleteDatabaseToolStripMenuItem.Text = "Delete database";
+            this.saveDBMenuItem.Index = 4;
+            this.saveDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
+            this.saveDBMenuItem.Text = "Save Database";
             // 
-            // toolStripSeparator1
+            // saveAsDBMenuItem
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
+            this.saveAsDBMenuItem.Index = 5;
+            this.saveAsDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftS;
+            this.saveAsDBMenuItem.Text = "Save Database as...";
             // 
-            // changeMasterKeyToolStripMenuItem
+            // menuItem8
             // 
-            this.changeMasterKeyToolStripMenuItem.Name = "changeMasterKeyToolStripMenuItem";
-            this.changeMasterKeyToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.changeMasterKeyToolStripMenuItem.Text = "Change master key";
+            this.menuItem8.Index = 6;
+            this.menuItem8.Text = "-";
             // 
-            // exportToCSVFileToolStripMenuItem
+            // changeMasterKeyMenuItem
             // 
-            this.exportToCSVFileToolStripMenuItem.Name = "exportToCSVFileToolStripMenuItem";
-            this.exportToCSVFileToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.exportToCSVFileToolStripMenuItem.Text = "Export to CSV file";
+            this.changeMasterKeyMenuItem.Index = 7;
+            this.changeMasterKeyMenuItem.Text = "Change Master-Key";
             // 
-            // toolStripSeparator2
+            // exportToCSVFileMenuItem
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(172, 6);
+            this.exportToCSVFileMenuItem.Index = 8;
+            this.exportToCSVFileMenuItem.Text = "Export to CSV";
             // 
-            // quitToolStripMenuItem
+            // menuItem11
             // 
-            this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.quitToolStripMenuItem.Text = "Quit";
-            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            this.menuItem11.Index = 9;
+            this.menuItem11.Text = "-";
             // 
-            // entriesToolStripMenuItem
+            // quitMenuItem
             // 
-            this.entriesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addNewEntryToolStripMenuItem,
-            this.deleteEntryToolStripMenuItem,
-            this.copyUsernameToolStripMenuItem,
-            this.copyPasswordToolStripMenuItem,
-            this.openURLToolStripMenuItem});
-            this.entriesToolStripMenuItem.Name = "entriesToolStripMenuItem";
-            this.entriesToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
-            this.entriesToolStripMenuItem.Text = "Entries";
+            this.quitMenuItem.Index = 10;
+            this.quitMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlQ;
+            this.quitMenuItem.Text = "Quit";
+            this.quitMenuItem.Click += new System.EventHandler(this.quitMenuItem_Click);
             // 
-            // addNewEntryToolStripMenuItem
+            // entriesMenuItem
             // 
-            this.addNewEntryToolStripMenuItem.Enabled = false;
-            this.addNewEntryToolStripMenuItem.Name = "addNewEntryToolStripMenuItem";
-            this.addNewEntryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.addNewEntryToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.addNewEntryToolStripMenuItem.Text = "Add new entry";
-            this.addNewEntryToolStripMenuItem.Click += new System.EventHandler(this.addNewEntryToolStripMenuItem_Click);
+            this.entriesMenuItem.Index = 1;
+            this.entriesMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.addEntryMenuItem,
+            this.editViewEntryMenuItem,
+            this.delEntryMenuItem,
+            this.menuItem17,
+            this.cpUsernameMenuItem,
+            this.cpPasswordMenuItem,
+            this.openURLMenuItem});
+            this.entriesMenuItem.Text = "Entries";
             // 
-            // deleteEntryToolStripMenuItem
+            // addEntryMenuItem
             // 
-            this.deleteEntryToolStripMenuItem.Enabled = false;
-            this.deleteEntryToolStripMenuItem.Name = "deleteEntryToolStripMenuItem";
-            this.deleteEntryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
-            this.deleteEntryToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.deleteEntryToolStripMenuItem.Text = "Delete entry";
-            this.deleteEntryToolStripMenuItem.Click += new System.EventHandler(this.deleteEntryToolStripMenuItem_Click);
+            this.addEntryMenuItem.Enabled = false;
+            this.addEntryMenuItem.Index = 0;
+            this.addEntryMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlY;
+            this.addEntryMenuItem.Text = "Add Entry";
+            this.addEntryMenuItem.Click += new System.EventHandler(this.addEntryMenuItem_Click);
             // 
-            // copyUsernameToolStripMenuItem
+            // editViewEntryMenuItem
             // 
-            this.copyUsernameToolStripMenuItem.Enabled = false;
-            this.copyUsernameToolStripMenuItem.Name = "copyUsernameToolStripMenuItem";
-            this.copyUsernameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this.copyUsernameToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.copyUsernameToolStripMenuItem.Text = "Copy username";
+            this.editViewEntryMenuItem.Enabled = false;
+            this.editViewEntryMenuItem.Index = 1;
+            this.editViewEntryMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlE;
+            this.editViewEntryMenuItem.Text = "Edit/View Entry";
+            this.editViewEntryMenuItem.Click += new System.EventHandler(this.editViewEntryMenuItem_Click);
             // 
-            // copyPasswordToolStripMenuItem
+            // delEntryMenuItem
             // 
-            this.copyPasswordToolStripMenuItem.Enabled = false;
-            this.copyPasswordToolStripMenuItem.Name = "copyPasswordToolStripMenuItem";
-            this.copyPasswordToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyPasswordToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.copyPasswordToolStripMenuItem.Text = "Copy password";
+            this.delEntryMenuItem.Enabled = false;
+            this.delEntryMenuItem.Index = 2;
+            this.delEntryMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlD;
+            this.delEntryMenuItem.Text = "Delete Entry";
+            this.delEntryMenuItem.Click += new System.EventHandler(this.delEntryMenuItem_Click);
             // 
-            // openURLToolStripMenuItem
+            // menuItem17
             // 
-            this.openURLToolStripMenuItem.Enabled = false;
-            this.openURLToolStripMenuItem.Name = "openURLToolStripMenuItem";
-            this.openURLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
-            this.openURLToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.openURLToolStripMenuItem.Text = "Open URL";
+            this.menuItem17.Index = 3;
+            this.menuItem17.Text = "-";
             // 
-            // helpToolStripMenuItem
+            // cpUsernameMenuItem
             // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
+            this.cpUsernameMenuItem.Enabled = false;
+            this.cpUsernameMenuItem.Index = 4;
+            this.cpUsernameMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlB;
+            this.cpUsernameMenuItem.Text = "Copy Username";
+            this.cpUsernameMenuItem.Click += new System.EventHandler(this.cpUsernameMenuItem_Click);
             // 
-            // aboutToolStripMenuItem
+            // cpPasswordMenuItem
             // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.cpPasswordMenuItem.Enabled = false;
+            this.cpPasswordMenuItem.Index = 5;
+            this.cpPasswordMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
+            this.cpPasswordMenuItem.Text = "Copy Password";
+            this.cpPasswordMenuItem.Click += new System.EventHandler(this.cpPasswordMenuItem_Click);
+            // 
+            // openURLMenuItem
+            // 
+            this.openURLMenuItem.Enabled = false;
+            this.openURLMenuItem.Index = 6;
+            this.openURLMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlU;
+            this.openURLMenuItem.Text = "Open URL";
+            this.openURLMenuItem.Click += new System.EventHandler(this.openURLMenuItem_Click);
+            // 
+            // helpMenuItem
+            // 
+            this.helpMenuItem.Index = 2;
+            this.helpMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.aboutMenuItem});
+            this.helpMenuItem.Text = "Help";
+            // 
+            // aboutMenuItem
+            // 
+            this.aboutMenuItem.Index = 0;
+            this.aboutMenuItem.Shortcut = System.Windows.Forms.Shortcut.F1;
+            this.aboutMenuItem.Text = "About";
+            this.aboutMenuItem.Click += new System.EventHandler(this.aboutMenuItem_Click);
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(725, 506);
-            this.Controls.Add(this.menu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MainMenuStrip = this.menu;
             this.MaximizeBox = false;
+            this.Menu = this.mainMenu;
             this.MinimumSize = new System.Drawing.Size(739, 542);
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainWindow";
             this.SizeChanged += new System.EventHandler(this.MainWindow_SizeChanged);
-            this.menu.ResumeLayout(false);
-            this.menu.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.MenuStrip menu;
-        private System.Windows.Forms.ToolStripMenuItem databaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newDatabaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openDatabaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveDatabaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteDatabaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem changeMasterKeyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportToCSVFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem entriesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addNewEntryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteEntryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem copyUsernameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem copyPasswordToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openURLToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.MainMenu mainMenu;
+        private System.Windows.Forms.MenuItem dbMenuItem;
+        private System.Windows.Forms.MenuItem newDBMenuItem;
+        private System.Windows.Forms.MenuItem openDBMenuItem;
+        private System.Windows.Forms.MenuItem closeDBMenuItem;
+        private System.Windows.Forms.MenuItem menuItem4;
+        private System.Windows.Forms.MenuItem saveDBMenuItem;
+        private System.Windows.Forms.MenuItem saveAsDBMenuItem;
+        private System.Windows.Forms.MenuItem menuItem8;
+        private System.Windows.Forms.MenuItem changeMasterKeyMenuItem;
+        private System.Windows.Forms.MenuItem exportToCSVFileMenuItem;
+        private System.Windows.Forms.MenuItem menuItem11;
+        private System.Windows.Forms.MenuItem quitMenuItem;
+        private System.Windows.Forms.MenuItem entriesMenuItem;
+        private System.Windows.Forms.MenuItem addEntryMenuItem;
+        private System.Windows.Forms.MenuItem editViewEntryMenuItem;
+        private System.Windows.Forms.MenuItem delEntryMenuItem;
+        private System.Windows.Forms.MenuItem menuItem17;
+        private System.Windows.Forms.MenuItem cpUsernameMenuItem;
+        private System.Windows.Forms.MenuItem cpPasswordMenuItem;
+        private System.Windows.Forms.MenuItem openURLMenuItem;
+        private System.Windows.Forms.MenuItem helpMenuItem;
+        private System.Windows.Forms.MenuItem aboutMenuItem;
     }
 }
 
