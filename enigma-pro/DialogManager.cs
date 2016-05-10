@@ -406,7 +406,6 @@ namespace enigma_pro
 
             // Title Label
             mTitleLbl.Location = new Point(5, 60);
-            mTitleLbl.Font = new Font("Times New Roman", mTitleLbl.Font.Size);
             mTitleLbl.Text = "Title:\t";
 
             // Username Label
