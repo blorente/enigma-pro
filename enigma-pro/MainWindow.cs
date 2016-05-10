@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace enigma_pro
@@ -102,10 +96,8 @@ namespace enigma_pro
             mListView = new DialogManager();
             if (mListView != null)
             {
-                int windowWidth = this.Width - 48;
-                int windowHeight = this.Height - 86;
-
-                mListView.InitializeListView(this, new Size(windowWidth, windowHeight));
+                mListView.InitializeListView(this, new Size(this.Width - 48, this.Height - 86));
+                DialogManager.SetWindowTheme(mListView.MLView.Handle, "Explorer", null);
             }
         }
 
@@ -161,7 +153,7 @@ namespace enigma_pro
         {
             if (mListView != null)
             {
-                if (mListView.MLView.SelectedItems.Count > 0)
+                if (mListView.MLView.SelectedItems.Count == 1)
                 {
                     SetMenuItemProperty(editViewEntryMenuItem, true);
                     SetMenuItemProperty(delEntryMenuItem, true);
@@ -169,6 +161,14 @@ namespace enigma_pro
                     SetMenuItemProperty(cpUsernameMenuItem, true);
                     SetMenuItemProperty(cpPasswordMenuItem, true);
                     SetMenuItemProperty(openURLMenuItem, true);
+                }
+                else if (mListView.MLView.SelectedItems.Count > 1)
+                {
+                    SetMenuItemProperty(editViewEntryMenuItem, false);
+                    SetMenuItemProperty(duplicateEntryMenuItem, false);
+                    SetMenuItemProperty(cpUsernameMenuItem, false);
+                    SetMenuItemProperty(cpPasswordMenuItem, false);
+                    SetMenuItemProperty(openURLMenuItem, false);
                 }
                 else
                 {

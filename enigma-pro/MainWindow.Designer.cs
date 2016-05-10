@@ -176,7 +176,7 @@
             // 
             this.duplicateEntryMenuItem.Index = 2;
             this.duplicateEntryMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlK;
-            this.duplicateEntryMenuItem.Text = "Duplicate Entry";
+            this.duplicateEntryMenuItem.Text = "Clone Entry";
             this.duplicateEntryMenuItem.Click += new System.EventHandler(this.duplicateEntryMenuItem_Click);
             // 
             // delEntryMenuItem
