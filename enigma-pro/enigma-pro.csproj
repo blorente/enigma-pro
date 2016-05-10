@@ -82,6 +82,33 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\entry-delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\entry-edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\entry-new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\lock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\lock_open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\password-copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\username-copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\globe_africa.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\share\icons\16x16\entry-clone.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

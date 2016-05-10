@@ -45,6 +45,7 @@
             this.entriesMenuItem = new System.Windows.Forms.MenuItem();
             this.addEntryMenuItem = new System.Windows.Forms.MenuItem();
             this.editViewEntryMenuItem = new System.Windows.Forms.MenuItem();
+            this.duplicateEntryMenuItem = new System.Windows.Forms.MenuItem();
             this.delEntryMenuItem = new System.Windows.Forms.MenuItem();
             this.menuItem17 = new System.Windows.Forms.MenuItem();
             this.cpUsernameMenuItem = new System.Windows.Forms.MenuItem();
@@ -96,6 +97,7 @@
             this.closeDBMenuItem.Index = 2;
             this.closeDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlW;
             this.closeDBMenuItem.Text = "Close";
+            this.closeDBMenuItem.Click += new System.EventHandler(this.closeDBMenuItem_Click);
             // 
             // menuItem4
             // 
@@ -147,16 +149,17 @@
             this.entriesMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.addEntryMenuItem,
             this.editViewEntryMenuItem,
+            this.duplicateEntryMenuItem,
             this.delEntryMenuItem,
             this.menuItem17,
             this.cpUsernameMenuItem,
             this.cpPasswordMenuItem,
             this.openURLMenuItem});
             this.entriesMenuItem.Text = "Entries";
+            this.entriesMenuItem.Select += new System.EventHandler(this.entriesMenuItem_Select);
             // 
             // addEntryMenuItem
             // 
-            this.addEntryMenuItem.Enabled = false;
             this.addEntryMenuItem.Index = 0;
             this.addEntryMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlY;
             this.addEntryMenuItem.Text = "Add Entry";
@@ -164,45 +167,47 @@
             // 
             // editViewEntryMenuItem
             // 
-            this.editViewEntryMenuItem.Enabled = false;
             this.editViewEntryMenuItem.Index = 1;
             this.editViewEntryMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlE;
             this.editViewEntryMenuItem.Text = "Edit/View Entry";
             this.editViewEntryMenuItem.Click += new System.EventHandler(this.editViewEntryMenuItem_Click);
             // 
+            // duplicateEntryMenuItem
+            // 
+            this.duplicateEntryMenuItem.Index = 2;
+            this.duplicateEntryMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlK;
+            this.duplicateEntryMenuItem.Text = "Duplicate Entry";
+            this.duplicateEntryMenuItem.Click += new System.EventHandler(this.duplicateEntryMenuItem_Click);
+            // 
             // delEntryMenuItem
             // 
-            this.delEntryMenuItem.Enabled = false;
-            this.delEntryMenuItem.Index = 2;
+            this.delEntryMenuItem.Index = 3;
             this.delEntryMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlD;
             this.delEntryMenuItem.Text = "Delete Entry";
             this.delEntryMenuItem.Click += new System.EventHandler(this.delEntryMenuItem_Click);
             // 
             // menuItem17
             // 
-            this.menuItem17.Index = 3;
+            this.menuItem17.Index = 4;
             this.menuItem17.Text = "-";
             // 
             // cpUsernameMenuItem
             // 
-            this.cpUsernameMenuItem.Enabled = false;
-            this.cpUsernameMenuItem.Index = 4;
+            this.cpUsernameMenuItem.Index = 5;
             this.cpUsernameMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlB;
             this.cpUsernameMenuItem.Text = "Copy Username";
             this.cpUsernameMenuItem.Click += new System.EventHandler(this.cpUsernameMenuItem_Click);
             // 
             // cpPasswordMenuItem
             // 
-            this.cpPasswordMenuItem.Enabled = false;
-            this.cpPasswordMenuItem.Index = 5;
+            this.cpPasswordMenuItem.Index = 6;
             this.cpPasswordMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
             this.cpPasswordMenuItem.Text = "Copy Password";
             this.cpPasswordMenuItem.Click += new System.EventHandler(this.cpPasswordMenuItem_Click);
             // 
             // openURLMenuItem
             // 
-            this.openURLMenuItem.Enabled = false;
-            this.openURLMenuItem.Index = 6;
+            this.openURLMenuItem.Index = 7;
             this.openURLMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlU;
             this.openURLMenuItem.Text = "Open URL";
             this.openURLMenuItem.Click += new System.EventHandler(this.openURLMenuItem_Click);
@@ -225,11 +230,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(725, 506);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.ClientSize = new System.Drawing.Size(724, 491);
             this.Menu = this.mainMenu;
-            this.MinimumSize = new System.Drawing.Size(739, 542);
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainWindow";
@@ -262,6 +264,7 @@
         private System.Windows.Forms.MenuItem openURLMenuItem;
         private System.Windows.Forms.MenuItem helpMenuItem;
         private System.Windows.Forms.MenuItem aboutMenuItem;
+        private System.Windows.Forms.MenuItem duplicateEntryMenuItem;
     }
 }
 

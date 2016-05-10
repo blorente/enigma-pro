@@ -22,7 +22,12 @@ namespace enigma_pro
 
             mDialog = new DialogManager();
             if (mDialog != null)
-                mDialog.AddNewLabel(this, new Point(329, 229), "Welcome!");
+                mDialog.AddNewLabel(this, "Welcome!");
+        }
+
+        private void SetMenuItemProperty(MenuItem menuItem, bool Toggle)
+        {
+            menuItem.Enabled = Toggle;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -86,19 +91,21 @@ namespace enigma_pro
             addEntryMenuItem.Enabled = true;
             editViewEntryMenuItem.Enabled = true;
             delEntryMenuItem.Enabled = true;
+            duplicateEntryMenuItem.Enabled = true;
             cpUsernameMenuItem.Enabled = true;
             cpPasswordMenuItem.Enabled = true;
             openURLMenuItem.Enabled = true;
 
             newDBMenuItem.Enabled = false;
-            mDialog.MLabel.Hide();
+            mDialog.MLabel.Visible = false;
 
             mListView = new DialogManager();
             if (mListView != null)
             {
-                mListView.InitializeListView(this);
-                this.MaximizeBox = true;
-                this.FormBorderStyle = FormBorderStyle.Sizable;
+                int windowWidth = this.Width - 48;
+                int windowHeight = this.Height - 86;
+
+                mListView.InitializeListView(this, new Size(windowWidth, windowHeight));
             }
         }
 
@@ -115,26 +122,19 @@ namespace enigma_pro
 
         private void editViewEntryMenuItem_Click(object sender, EventArgs e)
         {
-            
+            if (mListView != null)
+                mListView.InitializeEditEntry();
         }
 
         private void delEntryMenuItem_Click(object sender, EventArgs e)
         {
             if (mListView != null)
-            {
-                foreach (ListViewItem item in mListView.MLView.SelectedItems)
-                {
-                    if (item.Selected)
-                        mListView.MLView.Items.Remove(item);
-                }
-
-                mListView.FillListViewItemColors();
-            }
+                mListView.DeleteSelectedEntry();
         }
 
         private void cpUsernameMenuItem_Click(object sender, EventArgs e)
         {
-            if(mListView != null)
+            if (mListView != null)
                 mListView.CopyUsernameToClipboard();
         }
 
@@ -155,6 +155,66 @@ namespace enigma_pro
             mAboutDlg = new DialogManager();
             if (mAboutDlg != null)
                 mAboutDlg.InitializeAboutDialog();
+        }
+
+        private void entriesMenuItem_Select(object sender, EventArgs e)
+        {
+            if (mListView != null)
+            {
+                if (mListView.MLView.SelectedItems.Count > 0)
+                {
+                    SetMenuItemProperty(editViewEntryMenuItem, true);
+                    SetMenuItemProperty(delEntryMenuItem, true);
+                    SetMenuItemProperty(duplicateEntryMenuItem, true);
+                    SetMenuItemProperty(cpUsernameMenuItem, true);
+                    SetMenuItemProperty(cpPasswordMenuItem, true);
+                    SetMenuItemProperty(openURLMenuItem, true);
+                }
+                else
+                {
+                    SetMenuItemProperty(editViewEntryMenuItem, false);
+                    SetMenuItemProperty(delEntryMenuItem, false);
+                    SetMenuItemProperty(duplicateEntryMenuItem, false);
+                    SetMenuItemProperty(cpUsernameMenuItem, false);
+                    SetMenuItemProperty(cpPasswordMenuItem, false);
+                    SetMenuItemProperty(openURLMenuItem, false);
+                }
+            }
+            else
+            {
+                SetMenuItemProperty(addEntryMenuItem, false);
+                SetMenuItemProperty(editViewEntryMenuItem, false);
+                SetMenuItemProperty(delEntryMenuItem, false);
+                SetMenuItemProperty(duplicateEntryMenuItem, false);
+                SetMenuItemProperty(cpUsernameMenuItem, false);
+                SetMenuItemProperty(cpPasswordMenuItem, false);
+                SetMenuItemProperty(openURLMenuItem, false);
+            }
+        }
+
+        private void closeDBMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null && this.Controls.Contains(mListView.MLView))
+            {
+                DialogResult dialogResult = MessageBox.Show("Are you sure you want to close this Database?", "Close?", MessageBoxButtons.OKCancel,
+                                                                                                                   MessageBoxIcon.Question,
+                                                                                                                   MessageBoxDefaultButton.Button1);
+                if (dialogResult == DialogResult.OK)
+                {
+                    this.Controls.Remove(mListView.MLView);
+                    mListView.MLView.Dispose();
+                    mListView = null;
+
+                    SetMenuItemProperty(newDBMenuItem, true);
+                    mDialog.MLabel.Visible = true;
+                }
+            }
+        }
+
+        private void duplicateEntryMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView != null)
+                mListView.DuplicateEntry();
         }
     }
 }
