@@ -6,10 +6,10 @@ namespace enigma_pro
 {
     public partial class MainWindow : Form
     {
-        private DialogManager mAboutDlg;
-        private DialogManager mMasterKeyDlg;
-        private DialogManager mListView;
-        private readonly DialogManager mDialog;
+        private DialogManager _mAboutDlg;
+        private DialogManager _mMasterKeyDlg;
+        private DialogManager _mListView;
+        private readonly DialogManager _mDialog;
         
         private static string _mSDatabaseFilePath;
 
@@ -17,13 +17,18 @@ namespace enigma_pro
         {
             InitializeComponent();
 
-            mDialog = new DialogManager();
-            mDialog?.AddNewLabel(this, "Welcome!");
+            _mDialog = new DialogManager();
+            _mDialog?.AddNewLabel(this, "Welcome!");
+        }
+
+        private void MainWindow_Load(object sender, EventArgs e)
+        {
+            XmlHandler.LoadConfigXml(this, "config.xml");
         }
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //XmlHandler.SaveConfigXml(this, "Config.xml");
+            XmlHandler.SaveConfigXml(this, "config.xml");
         }
 
         private void ReEnableMenuItems()
@@ -39,19 +44,19 @@ namespace enigma_pro
 
         private void MainWindow_SizeChanged(object sender, EventArgs e)
         {
-            if (mListView != null)
-                mListView.MColumnNotes.Width = -2;
+            if (_mListView != null)
+                _mListView.MColumnNotes.Width = -2;
         }
 
         private void newDBMenuItem_Click(object sender, EventArgs e)
         {
-            mMasterKeyDlg = new DialogManager();
-            mMasterKeyDlg?.InitializeSetKeyFile();
+            _mMasterKeyDlg = new DialogManager();
+            _mMasterKeyDlg?.InitializeSetKeyFile();
 
             if (!DialogManager.MKeySet) return;
-            mListView = new DialogManager();
-            DatabaseHandler.NewDatabase(mListView, this);
-            mDialog.MLabel.Visible = false;
+            _mListView = new DialogManager();
+            DatabaseHandler.NewDatabase(_mListView, this);
+            _mDialog.MLabel.Visible = false;
             ReEnableMenuItems();
             DialogManager.SetMenuItemProperty(newDBMenuItem, false);
         }
@@ -63,45 +68,45 @@ namespace enigma_pro
 
         private void addEntryMenuItem_Click(object sender, EventArgs e)
         {
-            mListView?.InitializeAddNewEntry();
+            _mListView?.InitializeAddNewEntry();
         }
 
         private void editViewEntryMenuItem_Click(object sender, EventArgs e)
         {
-            mListView?.InitializeEditEntry();
+            _mListView?.InitializeEditEntry();
         }
 
         private void delEntryMenuItem_Click(object sender, EventArgs e)
         {
-            mListView?.DeleteSelectedEntry();
+            _mListView?.DeleteSelectedEntry();
         }
 
         private void cpUsernameMenuItem_Click(object sender, EventArgs e)
         {
-            mListView?.CopyUsernameToClipboard();
+            _mListView?.CopyUsernameToClipboard();
         }
 
         private void cpPasswordMenuItem_Click(object sender, EventArgs e)
         {
-            mListView?.CopyPasswordToClipboard();
+            _mListView?.CopyPasswordToClipboard();
         }
 
         private void openURLMenuItem_Click(object sender, EventArgs e)
         {
-            mListView?.OpenUrl();
+            _mListView?.OpenUrl();
         }
 
         private void aboutMenuItem_Click(object sender, EventArgs e)
         {
-            mAboutDlg = new DialogManager();
-            mAboutDlg?.InitializeAboutDialog();
+            _mAboutDlg = new DialogManager();
+            _mAboutDlg?.InitializeAboutDialog();
         }
 
         private void entriesMenuItem_Select(object sender, EventArgs e)
         {
-            if (mListView != null)
+            if (_mListView != null)
             {
-                if (mListView.MLView.SelectedItems.Count == 1)
+                if (_mListView.MLView.SelectedItems.Count == 1)
                 {
                     DialogManager.SetMenuItemProperty(editViewEntryMenuItem, true);
                     DialogManager.SetMenuItemProperty(delEntryMenuItem, true);
@@ -110,7 +115,7 @@ namespace enigma_pro
                     DialogManager.SetMenuItemProperty(cpPasswordMenuItem, true);
                     DialogManager.SetMenuItemProperty(openURLMenuItem, true);
                 }
-                else if (mListView.MLView.SelectedItems.Count > 1)
+                else if (_mListView.MLView.SelectedItems.Count > 1)
                 {
                     DialogManager.SetMenuItemProperty(editViewEntryMenuItem, false);
                     DialogManager.SetMenuItemProperty(duplicateEntryMenuItem, false);
@@ -142,24 +147,28 @@ namespace enigma_pro
 
         private void closeDBMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView == null || !Controls.Contains(mListView.MLView)) return;
+            if (_mListView == null || !Controls.Contains(_mListView.MLView)) return;
 
-            DatabaseHandler.CloseDatabase(mListView.MLView, this);
+            DatabaseHandler.CloseDatabase(_mListView.MLView, this);
             DialogManager.SetMenuItemProperty(newDBMenuItem, true);
-            mDialog.MLabel.Visible = true;
-            mListView = null;
+            _mDialog.MLabel.Visible = true;
+            _mListView = null;
             Text = "Enigma-Pro";
+            _mSDatabaseFilePath = "";
         }
 
         private void duplicateEntryMenuItem_Click(object sender, EventArgs e)
         {
-            mListView?.DuplicateEntry();
+            _mListView?.DuplicateEntry();
         }
 
         private void saveDBMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView == null || mListView.MLView.Items.Count <= 0) return;
-            XmlHandler.ExportEncryptedToXml(mListView.MLView, _mSDatabaseFilePath);
+            if (_mListView == null) return;
+            if (string.IsNullOrEmpty(_mSDatabaseFilePath))
+                MessageBox.Show("Please save the Database to a location first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            XmlHandler.ExportEncryptedToXml(_mListView.MLView, _mSDatabaseFilePath);
         }
 
         private void openDBMenuItem_Click(object sender, EventArgs e)
@@ -173,18 +182,18 @@ namespace enigma_pro
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 // If Database exists -> close current db
-                if (mListView != null && Controls.Contains(mListView.MLView))
+                if (_mListView != null && Controls.Contains(_mListView.MLView))
                 {
-                    DatabaseHandler.CloseDatabase(mListView.MLView, this);
+                    DatabaseHandler.CloseDatabase(_mListView.MLView, this);
                     DialogManager.SetMenuItemProperty(newDBMenuItem, true);
-                    mDialog.MLabel.Visible = true;
+                    _mDialog.MLabel.Visible = true;
                 }
 
                 // Create new Database
-                mListView = new DialogManager();
-                DatabaseHandler.OpenDatabase(mListView, this, openFileDialog);
+                _mListView = new DialogManager();
+                DatabaseHandler.OpenDatabase(_mListView, this, openFileDialog);
 
-                mDialog.MLabel.Visible = false;
+                _mDialog.MLabel.Visible = false;
                 ReEnableMenuItems();
                 DialogManager.SetMenuItemProperty(newDBMenuItem, false);
 
@@ -195,11 +204,11 @@ namespace enigma_pro
 
         private void dbMenuItem_Select(object sender, EventArgs e)
         {
-            DialogManager.SetMenuItemProperty(closeDBMenuItem, mListView != null);
-            DialogManager.SetMenuItemProperty(importDatabaseMenuItem, mListView != null);
-            DialogManager.SetMenuItemProperty(exportDatabaseMenuItem, mListView != null);
-            DialogManager.SetMenuItemProperty(saveDBMenuItem, mListView != null);
-            DialogManager.SetMenuItemProperty(saveAsDBMenuItem, mListView != null);
+            DialogManager.SetMenuItemProperty(closeDBMenuItem, _mListView != null);
+            DialogManager.SetMenuItemProperty(importDatabaseMenuItem, _mListView != null);
+            DialogManager.SetMenuItemProperty(exportDatabaseMenuItem, _mListView != null);
+            DialogManager.SetMenuItemProperty(saveDBMenuItem, _mListView != null);
+            DialogManager.SetMenuItemProperty(saveAsDBMenuItem, _mListView != null);
         }
 
         private void changeMasterKeyMenuItem_Click(object sender, EventArgs e)
@@ -210,7 +219,7 @@ namespace enigma_pro
         private void saveAsDBMenuItem_Click(object sender, EventArgs e)
         {
             // If any item exists in listview
-            if (mListView == null || mListView.MLView.Items.Count <= 0) return;
+            if (_mListView == null) return;
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "Enigma DB-File (*.edb)|*.edb",
@@ -218,7 +227,7 @@ namespace enigma_pro
             };
 
             if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
-            XmlHandler.ExportEncryptedToXml(mListView.MLView, saveFileDialog);
+            XmlHandler.ExportEncryptedToXml(_mListView.MLView, saveFileDialog);
 
             _mSDatabaseFilePath = Path.GetFullPath(saveFileDialog.FileName);
             this.Text = $"{Path.GetFileName(saveFileDialog.FileName)} - MainWindow";
@@ -233,13 +242,13 @@ namespace enigma_pro
             };
 
             if (openFileDialog.ShowDialog() != DialogResult.OK) return;
-            XmlHandler.ImportFromXml(mListView.MLView, openFileDialog);
+            XmlHandler.ImportFromXml(_mListView.MLView, openFileDialog);
         }
 
         private void exportToXMLFileMenuItem_Click(object sender, EventArgs e)
         {
             // If any item exists in listview
-            if (mListView == null || mListView.MLView.Items.Count <= 0) return;
+            if (_mListView == null || _mListView.MLView.Items.Count <= 0) return;
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "XML File (*.*)|*.xml",
@@ -247,7 +256,7 @@ namespace enigma_pro
             };
 
             if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
-            XmlHandler.ExportToXml(mListView.MLView, saveFileDialog);
+            XmlHandler.ExportToXml(_mListView.MLView, saveFileDialog);
         }
     }
 }

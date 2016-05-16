@@ -10,78 +10,78 @@ namespace enigma_pro
 {
     public class DialogManager
     {
-        private const int mMinimumColumnWidth = 60;
-        private static bool mIsPasswordShown;
+        private const int _mMinimumColumnWidth = 60;
+        private static bool _mIsPasswordShown;
         private static bool _mKeySet;
         private static string _mKeyPath, _mKeyPathSave;
 
         // Add Label
-        private Label mCustomLabel;
+        private Label _mCustomLabel;
 
         // Add / Edit Entry
-        private Form mEntryDlg;
-        private Label mTitleLbl;
-        private Label mUserNameLbl;
-        private Label mPasswordLbl;
-        private Label mPasswordRptLbl;
-        private Label mURLLbl;
-        private Label mNotesLbl;
-        private TextBox mTitleTBox;
-        private TextBox mUserNameTBox;
-        private TextBox mPasswordTBox;
-        private TextBox mPasswordRptTBox;
-        private TextBox mURLTBox;
-        private RichTextBox mNotesTBox;
-        private Button mShowPasswordBtn;
-        private Button mConfirmEntryBtn;
-        private Button mCancelBtn;
+        private Form _mEntryDlg;
+        private Label _mTitleLbl;
+        private Label _mUserNameLbl;
+        private Label _mPasswordLbl;
+        private Label _mPasswordRptLbl;
+        private Label _mUrlLbl;
+        private Label _mNotesLbl;
+        private TextBox _mTitleTBox;
+        private TextBox _mUserNameTBox;
+        private TextBox _mPasswordTBox;
+        private TextBox _mPasswordRptTBox;
+        private TextBox _mUrltBox;
+        private RichTextBox _mNotesTBox;
+        private Button _mShowPasswordBtn;
+        private Button _mConfirmEntryBtn;
+        private Button _mCancelBtn;
 
         // Change Master-Key Dialog
-        private Form mMasterKeyForm;
-        private Label mKeyLabel;
-        private ComboBox mKeyFileComboBox;
-        private Button mKeyFileLocationBtn;
-        private Button mSetKeyBtn;
-        private Button mCancelKeyBtn;
+        private Form _mMasterKeyForm;
+        private Label _mKeyLabel;
+        private ComboBox _mKeyFileComboBox;
+        private Button _mKeyFileLocationBtn;
+        private Button _mSetKeyBtn;
+        private Button _mCancelKeyBtn;
 
         // About-Dialog Components
-        private Form mAboutDlg;
-        private Button mCloseBtn;
-        private Label mInfoLbl;
-        private Label mCaptionLbl;
-        private LinkLabel mLinkLbl;
+        private Form _mAboutDlg;
+        private Button _mCloseBtn;
+        private Label _mInfoLbl;
+        private Label _mCaptionLbl;
+        private LinkLabel _mLinkLbl;
 
         // ListView Components
-        private ListView mLView;
-        private ContextMenuStrip mContextMenu;
-        private ToolStripSeparator mToolStripSeparator;
-        private ToolStripMenuItem mCopyUsernameToolStripMenuItem;
-        private ToolStripMenuItem mCopyPasswordToolStripMenuItem;
-        private ToolStripMenuItem mOpenURLToolStripMenuItem;
-        private ToolStripMenuItem mAddEntryToolStripMenuItem;
-        private ToolStripMenuItem mEditViewEntryToolStripMenuItem;
-        private ToolStripMenuItem mDuplicateEntryToolStripMenuItem;
-        private ToolStripMenuItem mDeleteEntryToolStripMenuItem;
-        private ColumnHeader mColumnTitle;
-        private ColumnHeader mColumnUsername;
-        private ColumnHeader mColumnPassword;
-        private ColumnHeader mColumnURL;
-        private ColumnHeader mColumnNotes;
+        private ListView _mLView;
+        private ContextMenuStrip _mContextMenu;
+        private ToolStripSeparator _mToolStripSeparator;
+        private ToolStripMenuItem _mCopyUsernameToolStripMenuItem;
+        private ToolStripMenuItem _mCopyPasswordToolStripMenuItem;
+        private ToolStripMenuItem _mOpenUrlToolStripMenuItem;
+        private ToolStripMenuItem _mAddEntryToolStripMenuItem;
+        private ToolStripMenuItem _mEditViewEntryToolStripMenuItem;
+        private ToolStripMenuItem _mDuplicateEntryToolStripMenuItem;
+        private ToolStripMenuItem _mDeleteEntryToolStripMenuItem;
+        private ColumnHeader _mColumnTitle;
+        private ColumnHeader _mColumnUsername;
+        private ColumnHeader _mColumnPassword;
+        private ColumnHeader _mColumnUrl;
+        private ColumnHeader _mColumnNotes;
 
         public Label MLabel
         {
-            get { return mCustomLabel; }
-            set { mCustomLabel = value; }
+            get { return _mCustomLabel; }
+            set { _mCustomLabel = value; }
         }
         public ListView MLView
         {
-            get { return mLView; }
-            set { mLView = value; }
+            get { return _mLView; }
+            set { _mLView = value; }
         }
         public ColumnHeader MColumnNotes
         {
-            get { return mColumnNotes; }
-            set { mColumnNotes = value; }
+            get { return _mColumnNotes; }
+            set { _mColumnNotes = value; }
         }
 
         public static bool MKeySet
@@ -93,23 +93,23 @@ namespace enigma_pro
         //------------------------------------------------------------------------------------
         [DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
         public static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
-        public static bool CheckURLValid(string URLInput)
+        public static bool CheckUrlValid(string urlInput)
         {
             Uri uriResult;
-            return Uri.TryCreate(URLInput, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            return Uri.TryCreate(urlInput, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
-        public static void SetMenuItemProperty(MenuItem menuItem, bool Toggle)
+        public static void SetMenuItemProperty(MenuItem menuItem, bool toggle)
         {
-            menuItem.Enabled = Toggle;
+            menuItem.Enabled = toggle;
         }
-        public static void AddNewPicture(Form Window, Size ImageSize, string ImagePath)
+        public static void AddNewPicture(Form window, Size imageSize, string imagePath)
         {
             PictureBox pictureBox = new PictureBox();
-            pictureBox.ImageLocation = ImagePath;
+            pictureBox.ImageLocation = imagePath;
             pictureBox.Location = new Point(0, 0);
-            pictureBox.Size = ImageSize;
+            pictureBox.Size = imageSize;
 
-            Window.Controls.Add(pictureBox);
+            window.Controls.Add(pictureBox);
         }
         public static string GetKeyFilePathSave()
         {
@@ -121,20 +121,20 @@ namespace enigma_pro
         }
         public void FitColumnWidth()
         {
-            mColumnTitle.Width = -2;
-            mColumnUsername.Width = -2;
-            mColumnPassword.Width = -2;
-            mColumnURL.Width = -2;
-            mColumnNotes.Width = -2;
+            _mColumnTitle.Width = -2;
+            _mColumnUsername.Width = -2;
+            _mColumnPassword.Width = -2;
+            _mColumnUrl.Width = -2;
+            _mColumnNotes.Width = -2;
         }
         public void FillListViewItemColors()
         {
-            foreach (ListViewItem item in mLView.Items)
+            foreach (ListViewItem item in _mLView.Items)
                 item.BackColor = item.Index % 2 == 0 ? Color.White : Color.FromArgb(246, 246, 246);
         }
         public void CopyUsernameToClipboard()
         {
-            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
+            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
 
             foreach (ListViewItem item in selectedLVItem)
             {
@@ -144,7 +144,7 @@ namespace enigma_pro
         }
         public void CopyPasswordToClipboard()
         {
-            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
+            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
 
             foreach (ListViewItem item in selectedLVItem)
             {
@@ -154,17 +154,17 @@ namespace enigma_pro
         }
         public void OpenUrl()
         {
-            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
+            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
 
             foreach (ListViewItem item in selectedLVItem)
             {
-                if (CheckURLValid(item.SubItems[3].Text))
+                if (CheckUrlValid(item.SubItems[3].Text))
                     System.Diagnostics.Process.Start(item.SubItems[3].Text);
             }
         }
         public void DeleteSelectedEntry()
         {
-            ListView listview = mLView;
+            ListView listview = _mLView;
             foreach (ListViewItem item in listview.SelectedItems)
             {
                 DialogResult dialogResult = MessageBox.Show(
@@ -186,7 +186,7 @@ namespace enigma_pro
             string URL = string.Empty;
             string Notes = string.Empty;
 
-            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
+            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
 
             foreach (ListViewItem item in selectedLVItem)
             {
@@ -210,567 +210,571 @@ namespace enigma_pro
             LVItems.SubItems.Add(URL);
             LVItems.SubItems.Add(Notes);
 
-            mLView.Items.Add(LVItems);
+            _mLView.Items.Add(LVItems);
 
             FitColumnWidth();
             FillListViewItemColors();
         }
-        public void AddNewLabel(Form Window, string Caption)
+        public void AddNewLabel(Form window, string caption)
         {
-            mCustomLabel = new Label();
+            _mCustomLabel = new Label();
 
-            mCustomLabel.TextAlign = ContentAlignment.MiddleCenter;
-            mCustomLabel.Dock = DockStyle.Fill;
-            mCustomLabel.Text = Caption;
-            mCustomLabel.AutoSize = false;
+            _mCustomLabel.TextAlign = ContentAlignment.MiddleCenter;
+            _mCustomLabel.Dock = DockStyle.Fill;
+            _mCustomLabel.Text = caption;
+            _mCustomLabel.AutoSize = false;
 
-            Window.Controls.Add(mCustomLabel);
+            window.Controls.Add(_mCustomLabel);
         }
         public void InitializeAboutDialog()
         {
             // Initialize Components
-            mAboutDlg = new Form();
-            mCloseBtn = new Button();
-            mInfoLbl = new Label();
-            mCaptionLbl = new Label();
-            mLinkLbl = new LinkLabel();
+            _mAboutDlg = new Form();
+            _mCloseBtn = new Button();
+            _mInfoLbl = new Label();
+            _mCaptionLbl = new Label();
+            _mLinkLbl = new LinkLabel();
 
             // About Dialog
-            mAboutDlg.Size = new Size(320, 270);
-            mAboutDlg.Text = "About enigma-pro";
-            mAboutDlg.StartPosition = FormStartPosition.CenterScreen;
-            mAboutDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
-            mAboutDlg.ShowInTaskbar = false;
-            mAboutDlg.MaximizeBox = false;
-            mAboutDlg.MinimizeBox = false;
-            mAboutDlg.HelpButton = true;
-            mAboutDlg.CancelButton = mCloseBtn;
+            _mAboutDlg.Size = new Size(320, 270);
+            _mAboutDlg.Text = "About enigma-pro";
+            _mAboutDlg.StartPosition = FormStartPosition.CenterScreen;
+            _mAboutDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+            _mAboutDlg.ShowInTaskbar = false;
+            _mAboutDlg.MaximizeBox = false;
+            _mAboutDlg.MinimizeBox = false;
+            _mAboutDlg.HelpButton = true;
+            _mAboutDlg.CancelButton = _mCloseBtn;
 
             // Close Button
-            mCloseBtn.Location = new Point(220, 200);
-            mCloseBtn.Text = "Close";
+            _mCloseBtn.Location = new Point(220, 200);
+            _mCloseBtn.Text = "Close";
 
             // Info Label
-            mInfoLbl.Location = new Point(5, 80);
-            mInfoLbl.AutoSize = true;
-            mInfoLbl.Text = "enigma-pro is distributed under the term of the GNU General\nPublic License (GPL) version 2 or (at your option) version\n3.";
-            mInfoLbl.Text += "\n\nUsing:\n- Visual Studio 2013\n- C#";
+            _mInfoLbl.Location = new Point(5, 80);
+            _mInfoLbl.AutoSize = true;
+            _mInfoLbl.Text = "enigma-pro is distributed under the term of the GNU General\nPublic License (GPL) version 2 or (at your option) version\n3.";
+            _mInfoLbl.Text += "\n\nUsing:\n- Visual Studio 2013\n- C#";
 
             // Title Label
-            mCaptionLbl.Location = new Point(60, 25);
-            mCaptionLbl.AutoSize = true;
-            mCaptionLbl.Font = new Font("Arial", 12, FontStyle.Bold);
-            mCaptionLbl.Text = "Enigma-Pro 1.0.0";
+            _mCaptionLbl.Location = new Point(60, 25);
+            _mCaptionLbl.AutoSize = true;
+            _mCaptionLbl.Font = new Font("Arial", 12, FontStyle.Bold);
+            _mCaptionLbl.Text = "Enigma-Pro 1.0.0";
 
             // Github Label
-            mLinkLbl.Location = new Point(5, 60);
-            mLinkLbl.AutoSize = true;
-            mLinkLbl.Text = "https://github.com/3n16m4/enigma-pro";
-            mLinkLbl.LinkClicked += new LinkLabelLinkClickedEventHandler(OnLinkLblClicked);
+            _mLinkLbl.Location = new Point(5, 60);
+            _mLinkLbl.AutoSize = true;
+            _mLinkLbl.Text = "https://github.com/3n16m4/enigma-pro";
+            _mLinkLbl.LinkClicked += new LinkLabelLinkClickedEventHandler(OnLinkLblClicked);
 
             // Add Controls to Dialog
-            mAboutDlg.Controls.AddRange(new Control[]
+            _mAboutDlg.Controls.AddRange(new Control[]
             {
-                mCloseBtn,
-                mInfoLbl,
-                mCaptionLbl,
-                mLinkLbl
+                _mCloseBtn,
+                _mInfoLbl,
+                _mCaptionLbl,
+                _mLinkLbl
             });
 
             // Display initial Dialog
-            mAboutDlg.ShowDialog();
+            _mAboutDlg.ShowDialog();
         }
-        public void InitializeListView(Form Window, Size ListViewSize)
+        public void InitializeListView(Form window, Size listViewSize)
         {
+            if (window == null) throw new ArgumentNullException(nameof(window));
+
             // Initialize Components
-            mLView = new ListView();
-            mContextMenu = new ContextMenuStrip();
+            _mLView = new ListView();
+            _mContextMenu = new ContextMenuStrip();
 
-            mToolStripSeparator = new ToolStripSeparator();
-            mCopyUsernameToolStripMenuItem = new ToolStripMenuItem();
-            mCopyPasswordToolStripMenuItem = new ToolStripMenuItem();
-            mOpenURLToolStripMenuItem = new ToolStripMenuItem();
-            mAddEntryToolStripMenuItem = new ToolStripMenuItem();
-            mEditViewEntryToolStripMenuItem = new ToolStripMenuItem();
-            mDuplicateEntryToolStripMenuItem = new ToolStripMenuItem();
-            mDeleteEntryToolStripMenuItem = new ToolStripMenuItem();
+            _mToolStripSeparator = new ToolStripSeparator();
+            _mCopyUsernameToolStripMenuItem = new ToolStripMenuItem();
+            _mCopyPasswordToolStripMenuItem = new ToolStripMenuItem();
+            _mOpenUrlToolStripMenuItem = new ToolStripMenuItem();
+            _mAddEntryToolStripMenuItem = new ToolStripMenuItem();
+            _mEditViewEntryToolStripMenuItem = new ToolStripMenuItem();
+            _mDuplicateEntryToolStripMenuItem = new ToolStripMenuItem();
+            _mDeleteEntryToolStripMenuItem = new ToolStripMenuItem();
 
-            mColumnTitle = new ColumnHeader();
-            mColumnUsername = new ColumnHeader();
-            mColumnPassword = new ColumnHeader();
-            mColumnURL = new ColumnHeader();
-            mColumnNotes = new ColumnHeader();
+            _mColumnTitle = new ColumnHeader();
+            _mColumnUsername = new ColumnHeader();
+            _mColumnPassword = new ColumnHeader();
+            _mColumnUrl = new ColumnHeader();
+            _mColumnNotes = new ColumnHeader();
 
-            mToolStripSeparator.Size = new Size(196, 6);
+            _mToolStripSeparator.Size = new Size(196, 6);
 
-            mCopyUsernameToolStripMenuItem.Image = Properties.Resources.username_copy;
-            mCopyUsernameToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.B);
-            mCopyUsernameToolStripMenuItem.Size = new Size(199, 22);
-            mCopyUsernameToolStripMenuItem.Text = "Copy Username";
-            mCopyUsernameToolStripMenuItem.Click += new EventHandler(OnCopyUsernameToolStripMenuItemClicked);
+            _mCopyUsernameToolStripMenuItem.Image = Properties.Resources.username_copy;
+            _mCopyUsernameToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.B);
+            _mCopyUsernameToolStripMenuItem.Size = new Size(199, 22);
+            _mCopyUsernameToolStripMenuItem.Text = "Copy Username";
+            _mCopyUsernameToolStripMenuItem.Click += new EventHandler(OnCopyUsernameToolStripMenuItemClicked);
 
-            mCopyPasswordToolStripMenuItem.Image = Properties.Resources.password_copy;
-            mCopyPasswordToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.C);
-            mCopyPasswordToolStripMenuItem.Size = new Size(199, 22);
-            mCopyPasswordToolStripMenuItem.Text = "Copy Password";
-            mCopyPasswordToolStripMenuItem.Click += new EventHandler(OnCopyPasswordToolStripMenuItemClicked);
+            _mCopyPasswordToolStripMenuItem.Image = Properties.Resources.password_copy;
+            _mCopyPasswordToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.C);
+            _mCopyPasswordToolStripMenuItem.Size = new Size(199, 22);
+            _mCopyPasswordToolStripMenuItem.Text = "Copy Password";
+            _mCopyPasswordToolStripMenuItem.Click += new EventHandler(OnCopyPasswordToolStripMenuItemClicked);
 
-            mOpenURLToolStripMenuItem.Image = Properties.Resources.globe_africa;
-            mOpenURLToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.U);
-            mOpenURLToolStripMenuItem.Size = new Size(199, 22);
-            mOpenURLToolStripMenuItem.Text = "Open URL";
-            mOpenURLToolStripMenuItem.Click += new EventHandler(OnOpenUrlToolStripMenuItemClicked);
+            _mOpenUrlToolStripMenuItem.Image = Properties.Resources.globe_africa;
+            _mOpenUrlToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.U);
+            _mOpenUrlToolStripMenuItem.Size = new Size(199, 22);
+            _mOpenUrlToolStripMenuItem.Text = "Open URL";
+            _mOpenUrlToolStripMenuItem.Click += new EventHandler(OnOpenUrlToolStripMenuItemClicked);
 
-            mAddEntryToolStripMenuItem.Image = Properties.Resources.entry_new;
-            mAddEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.Y);
-            mAddEntryToolStripMenuItem.Size = new Size(199, 22);
-            mAddEntryToolStripMenuItem.Text = "Add Entry";
-            mAddEntryToolStripMenuItem.Click += new EventHandler(OnAddEntryToolStripMenuItemClicked);
+            _mAddEntryToolStripMenuItem.Image = Properties.Resources.entry_new;
+            _mAddEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.Y);
+            _mAddEntryToolStripMenuItem.Size = new Size(199, 22);
+            _mAddEntryToolStripMenuItem.Text = "Add Entry";
+            _mAddEntryToolStripMenuItem.Click += new EventHandler(OnAddEntryToolStripMenuItemClicked);
 
-            mEditViewEntryToolStripMenuItem.Image = Properties.Resources.entry_edit;
-            mEditViewEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.E);
-            mEditViewEntryToolStripMenuItem.Size = new Size(199, 22);
-            mEditViewEntryToolStripMenuItem.Text = "Edit/View Entry";
-            mEditViewEntryToolStripMenuItem.Click += new EventHandler(OnEditEntryToolStripMenuItemClicked);
+            _mEditViewEntryToolStripMenuItem.Image = Properties.Resources.entry_edit;
+            _mEditViewEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.E);
+            _mEditViewEntryToolStripMenuItem.Size = new Size(199, 22);
+            _mEditViewEntryToolStripMenuItem.Text = "Edit/View Entry";
+            _mEditViewEntryToolStripMenuItem.Click += new EventHandler(OnEditEntryToolStripMenuItemClicked);
 
-            mDuplicateEntryToolStripMenuItem.Image = Properties.Resources.entry_clone;
-            mDuplicateEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.K);
-            mDuplicateEntryToolStripMenuItem.Size = new Size(199, 22);
-            mDuplicateEntryToolStripMenuItem.Text = "Clone Entry";
-            mDuplicateEntryToolStripMenuItem.Click += new EventHandler(OnDuplicateEntryToolStripMenuItemClicked);
+            _mDuplicateEntryToolStripMenuItem.Image = Properties.Resources.entry_clone;
+            _mDuplicateEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.K);
+            _mDuplicateEntryToolStripMenuItem.Size = new Size(199, 22);
+            _mDuplicateEntryToolStripMenuItem.Text = "Clone Entry";
+            _mDuplicateEntryToolStripMenuItem.Click += new EventHandler(OnDuplicateEntryToolStripMenuItemClicked);
 
-            mDeleteEntryToolStripMenuItem.Image = Properties.Resources.entry_delete;
-            mDeleteEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.D);
-            mDeleteEntryToolStripMenuItem.Size = new Size(199, 22);
-            mDeleteEntryToolStripMenuItem.Text = "Delete Entry";
-            mDeleteEntryToolStripMenuItem.Click += new EventHandler(OnDeleteEntryToolStripMenuItemClicked);
+            _mDeleteEntryToolStripMenuItem.Image = Properties.Resources.entry_delete;
+            _mDeleteEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.D);
+            _mDeleteEntryToolStripMenuItem.Size = new Size(199, 22);
+            _mDeleteEntryToolStripMenuItem.Text = "Delete Entry";
+            _mDeleteEntryToolStripMenuItem.Click += new EventHandler(OnDeleteEntryToolStripMenuItemClicked);
 
-            mContextMenu.Size = new Size(200, 142);
-            mContextMenu.Opening += new CancelEventHandler(OnContextMenuOpening);
-            mContextMenu.Items.AddRange(new ToolStripItem[]
+            _mContextMenu.Size = new Size(200, 142);
+            _mContextMenu.Opening += new CancelEventHandler(OnContextMenuOpening);
+            _mContextMenu.Items.AddRange(new ToolStripItem[]
             {
-                mCopyUsernameToolStripMenuItem,
-                mCopyPasswordToolStripMenuItem,
-                mOpenURLToolStripMenuItem,
-                mToolStripSeparator,
-                mAddEntryToolStripMenuItem,
-                mEditViewEntryToolStripMenuItem,
-                mDuplicateEntryToolStripMenuItem,
-                mDeleteEntryToolStripMenuItem
+                _mCopyUsernameToolStripMenuItem,
+                _mCopyPasswordToolStripMenuItem,
+                _mOpenUrlToolStripMenuItem,
+                _mToolStripSeparator,
+                _mAddEntryToolStripMenuItem,
+                _mEditViewEntryToolStripMenuItem,
+                _mDuplicateEntryToolStripMenuItem,
+                _mDeleteEntryToolStripMenuItem
             });
 
-            mColumnTitle.Text = "Title";
-            mColumnTitle.Width = 40;
-            mColumnUsername.Text = "Username";
-            mColumnPassword.Text = "Password";
-            mColumnURL.Text = "URL";
-            mColumnURL.Width = 40;
-            mColumnNotes.Text = "Notes";
-            mColumnNotes.Width = -2;
+            _mColumnTitle.Text = "Title";
+            _mColumnTitle.Width = 40;
+            _mColumnUsername.Text = "Username";
+            _mColumnPassword.Text = "Password";
+            _mColumnUrl.Text = "URL";
+            _mColumnUrl.Width = 40;
+            _mColumnNotes.Text = "Notes";
+            _mColumnNotes.Width = -2;
 
-            mLView.ContextMenuStrip = mContextMenu;
-            mLView.ColumnWidthChanged += new ColumnWidthChangedEventHandler(OnListViewColumnWidthChanged);
-            mLView.KeyDown += new KeyEventHandler(OnListViewKeyDown);
-            mLView.Location = new Point(16, 15);
-            mLView.Size = ListViewSize;
-            mLView.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right);
-            mLView.Columns.AddRange(new ColumnHeader[]
+            _mLView.ContextMenuStrip = _mContextMenu;
+            _mLView.ColumnWidthChanged += new ColumnWidthChangedEventHandler(OnListViewColumnWidthChanged);
+            _mLView.KeyDown += new KeyEventHandler(OnListViewKeyDown);
+            _mLView.Location = new Point(16, 15);
+            _mLView.Size = listViewSize;
+            _mLView.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right);
+            _mLView.Columns.AddRange(new ColumnHeader[]
             {
-                mColumnTitle,
-                mColumnUsername,
-                mColumnPassword,
-                mColumnURL,
-                mColumnNotes
+                _mColumnTitle,
+                _mColumnUsername,
+                _mColumnPassword,
+                _mColumnUrl,
+                _mColumnNotes
             });
-            mLView.View = View.Details;
-            mLView.FullRowSelect = true;
-            mLView.MultiSelect = true;
-            mLView.UseCompatibleStateImageBehavior = false;
+            _mLView.View = View.Details;
+            _mLView.FullRowSelect = true;
+            _mLView.MultiSelect = true;
+            _mLView.UseCompatibleStateImageBehavior = false;
 
-            Window.Controls.Add(mLView);
+            window.Controls.Add(_mLView);
         }
         public void InitializeAddNewEntry()
         {
             // Initialize Components
-            mEntryDlg = new Form();
+            _mEntryDlg = new Form();
 
-            mTitleLbl = new Label(); ;
-            mUserNameLbl = new Label();
-            mPasswordLbl = new Label();
-            mPasswordRptLbl = new Label();
-            mURLLbl = new Label();
-            mNotesLbl = new Label();
+            _mTitleLbl = new Label(); ;
+            _mUserNameLbl = new Label();
+            _mPasswordLbl = new Label();
+            _mPasswordRptLbl = new Label();
+            _mUrlLbl = new Label();
+            _mNotesLbl = new Label();
 
-            mTitleTBox = new TextBox();
-            mUserNameTBox = new TextBox();
-            mPasswordTBox = new TextBox();
-            mPasswordRptTBox = new TextBox();
-            mURLTBox = new TextBox();
-            mNotesTBox = new RichTextBox();
+            _mTitleTBox = new TextBox();
+            _mUserNameTBox = new TextBox();
+            _mPasswordTBox = new TextBox();
+            _mPasswordRptTBox = new TextBox();
+            _mUrltBox = new TextBox();
+            _mNotesTBox = new RichTextBox();
 
-            mShowPasswordBtn = new Button();
-            mConfirmEntryBtn = new Button();
-            mCancelBtn = new Button();
+            _mShowPasswordBtn = new Button();
+            _mConfirmEntryBtn = new Button();
+            _mCancelBtn = new Button();
 
             // Add Entry Dialog
-            mEntryDlg.Size = new Size(490, 390);
-            mEntryDlg.Text = "Add Entry";
-            mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
-            mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
-            mEntryDlg.ShowInTaskbar = false;
-            mEntryDlg.MaximizeBox = false;
-            mEntryDlg.MinimizeBox = false;
-            mEntryDlg.AcceptButton = mConfirmEntryBtn;
-            mEntryDlg.CancelButton = mCancelBtn;
+            _mEntryDlg.Size = new Size(490, 390);
+            _mEntryDlg.Text = "Add Entry";
+            _mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
+            _mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+            _mEntryDlg.ShowInTaskbar = false;
+            _mEntryDlg.MaximizeBox = false;
+            _mEntryDlg.MinimizeBox = false;
+            _mEntryDlg.AcceptButton = _mConfirmEntryBtn;
+            _mEntryDlg.CancelButton = _mCancelBtn;
 
             // Title Label
-            mTitleLbl.Location = new Point(5, 60);
-            mTitleLbl.Text = "Title:\t";
+            _mTitleLbl.Location = new Point(5, 60);
+            _mTitleLbl.Text = "Title:\t";
 
             // Username Label
-            mUserNameLbl.Location = new Point(5, 90);
-            mUserNameLbl.Text = "Username:\t";
+            _mUserNameLbl.Location = new Point(5, 90);
+            _mUserNameLbl.Text = "Username:\t";
 
             // Password Label
-            mPasswordLbl.Location = new Point(5, 120);
-            mPasswordLbl.Text = "Password:\t";
+            _mPasswordLbl.Location = new Point(5, 120);
+            _mPasswordLbl.Text = "Password:\t";
 
             // Password Repeat Label
-            mPasswordRptLbl.Location = new Point(5, 150);
-            mPasswordRptLbl.Text = "Repeat:\t";
+            _mPasswordRptLbl.Location = new Point(5, 150);
+            _mPasswordRptLbl.Text = "Repeat:\t";
 
             // URL Label
-            mURLLbl.Location = new Point(5, 180);
-            mURLLbl.Text = "URL:\t";
+            _mUrlLbl.Location = new Point(5, 180);
+            _mUrlLbl.Text = "URL:\t";
 
             // Notes Label
-            mNotesLbl.Location = new Point(5, 210);
-            mNotesLbl.Text = "Notes:\t";
+            _mNotesLbl.Location = new Point(5, 210);
+            _mNotesLbl.Text = "Notes:\t";
 
             // Title TextBox
-            mTitleTBox.Location = new Point(115, 60);
-            mTitleTBox.Size = new Size(350, 20);
+            _mTitleTBox.Location = new Point(115, 60);
+            _mTitleTBox.Size = new Size(350, 20);
 
             // Username TextBox
-            mUserNameTBox.Location = new Point(115, 90);
-            mUserNameTBox.Size = new Size(350, 20);
+            _mUserNameTBox.Location = new Point(115, 90);
+            _mUserNameTBox.Size = new Size(350, 20);
 
             // Password TextBox
-            mPasswordTBox.Location = new Point(115, 120);
-            mPasswordTBox.Size = new Size(322, 20);
-            mPasswordTBox.UseSystemPasswordChar = true;
+            _mPasswordTBox.Location = new Point(115, 120);
+            _mPasswordTBox.Size = new Size(322, 20);
+            _mPasswordTBox.UseSystemPasswordChar = true;
 
             // Hide/Show Password
-            mShowPasswordBtn.Location = new Point(441, 120);
-            mShowPasswordBtn.Size = new Size(24, 24);
-            mShowPasswordBtn.Image = Image.FromFile("share/icons/16x16/lock.png");
-            mShowPasswordBtn.Click += new EventHandler(OnPasswordMaskClicked);
+            _mShowPasswordBtn.Location = new Point(441, 120);
+            _mShowPasswordBtn.Size = new Size(24, 24);
+            _mShowPasswordBtn.Image = Image.FromFile("share/icons/16x16/lock.png");
+            _mShowPasswordBtn.Click += new EventHandler(OnPasswordMaskClicked);
 
             // Password Repeat TextBox
-            mPasswordRptTBox.Location = new Point(115, 150);
-            mPasswordRptTBox.Size = new Size(322, 20);
-            mPasswordRptTBox.UseSystemPasswordChar = true;
+            _mPasswordRptTBox.Location = new Point(115, 150);
+            _mPasswordRptTBox.Size = new Size(322, 20);
+            _mPasswordRptTBox.UseSystemPasswordChar = true;
 
             // URL TextBox
-            mURLTBox.Location = new Point(115, 180);
-            mURLTBox.Size = new Size(350, 20);
+            _mUrltBox.Location = new Point(115, 180);
+            _mUrltBox.Size = new Size(350, 20);
 
             // Notes RichTextBox
-            mNotesTBox.Location = new Point(115, 210);
-            mNotesTBox.Size = new Size(350, 100);
-            mNotesTBox.Multiline = true;
-            mNotesTBox.AcceptsTab = true;
-            mNotesTBox.WordWrap = true;
+            _mNotesTBox.Location = new Point(115, 210);
+            _mNotesTBox.Size = new Size(350, 100);
+            _mNotesTBox.Multiline = true;
+            _mNotesTBox.AcceptsTab = true;
+            _mNotesTBox.WordWrap = true;
 
             // Add Entry Button
-            mConfirmEntryBtn.Location = new Point(305, 320);
-            mConfirmEntryBtn.Text = "OK";
-            mConfirmEntryBtn.Click += new EventHandler(OnAddEntryBtnClicked);
+            _mConfirmEntryBtn.Location = new Point(305, 320);
+            _mConfirmEntryBtn.Text = "OK";
+            _mConfirmEntryBtn.Click += new EventHandler(OnAddEntryBtnClicked);
 
             // Cancel Button
-            mCancelBtn.Location = new Point(390, 320);
-            mCancelBtn.Text = "Cancel";
+            _mCancelBtn.Location = new Point(390, 320);
+            _mCancelBtn.Text = "Cancel";
 
-            mEntryDlg.Controls.AddRange(new Control[]
+            _mEntryDlg.Controls.AddRange(new Control[]
             {
-                mTitleLbl,
-                mUserNameLbl,
-                mPasswordLbl,
-                mPasswordRptLbl,
-                mURLLbl,
-                mNotesLbl,
-                mTitleTBox,
-                mUserNameTBox,
-                mPasswordTBox,
-                mPasswordRptTBox,
-                mURLTBox,
-                mNotesTBox,
-                mShowPasswordBtn,
-                mConfirmEntryBtn,
-                mCancelBtn
+                _mTitleLbl,
+                _mUserNameLbl,
+                _mPasswordLbl,
+                _mPasswordRptLbl,
+                _mUrlLbl,
+                _mNotesLbl,
+                _mTitleTBox,
+                _mUserNameTBox,
+                _mPasswordTBox,
+                _mPasswordRptTBox,
+                _mUrltBox,
+                _mNotesTBox,
+                _mShowPasswordBtn,
+                _mConfirmEntryBtn,
+                _mCancelBtn
             });
 
-            AddNewPicture(mEntryDlg, new Size(475, 50), "share/banners/add-entry-banner.png");
-            mEntryDlg.ShowDialog();
+            AddNewPicture(_mEntryDlg, new Size(475, 50), "share/banners/add-entry-banner.png");
+            _mEntryDlg.ShowDialog();
         }
         public void InitializeEditEntry()
         {
             // Initialize Components
-            mEntryDlg = new Form();
+            _mEntryDlg = new Form();
 
-            mTitleLbl = new Label(); ;
-            mUserNameLbl = new Label();
-            mPasswordLbl = new Label();
-            mPasswordRptLbl = new Label();
-            mURLLbl = new Label();
-            mNotesLbl = new Label();
+            _mTitleLbl = new Label(); ;
+            _mUserNameLbl = new Label();
+            _mPasswordLbl = new Label();
+            _mPasswordRptLbl = new Label();
+            _mUrlLbl = new Label();
+            _mNotesLbl = new Label();
 
-            mTitleTBox = new TextBox();
-            mUserNameTBox = new TextBox();
-            mPasswordTBox = new TextBox();
-            mPasswordRptTBox = new TextBox();
-            mURLTBox = new TextBox();
-            mNotesTBox = new RichTextBox();
+            _mTitleTBox = new TextBox();
+            _mUserNameTBox = new TextBox();
+            _mPasswordTBox = new TextBox();
+            _mPasswordRptTBox = new TextBox();
+            _mUrltBox = new TextBox();
+            _mNotesTBox = new RichTextBox();
 
-            mShowPasswordBtn = new Button();
-            mConfirmEntryBtn = new Button();
-            mCancelBtn = new Button();
+            _mShowPasswordBtn = new Button();
+            _mConfirmEntryBtn = new Button();
+            _mCancelBtn = new Button();
 
-            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
+            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
 
             foreach (ListViewItem item in selectedLVItem)
             {
-                mTitleTBox.Text = item.SubItems[0].Text;
-                mUserNameTBox.Text = item.SubItems[1].Text;
-                mPasswordTBox.Text = item.SubItems[2].Text;
-                mPasswordRptTBox.Text = item.SubItems[2].Text;
-                mURLTBox.Text = item.SubItems[3].Text;
-                mNotesTBox.Text = item.SubItems[4].Text;
+                _mTitleTBox.Text = item.SubItems[0].Text;
+                _mUserNameTBox.Text = item.SubItems[1].Text;
+                _mPasswordTBox.Text = item.SubItems[2].Text;
+                _mPasswordRptTBox.Text = item.SubItems[2].Text;
+                _mUrltBox.Text = item.SubItems[3].Text;
+                _mNotesTBox.Text = item.SubItems[4].Text;
             }
 
             // Add Entry Dialog
-            mEntryDlg.Size = new Size(490, 390);
-            mEntryDlg.Text = "Edit Entry";
-            mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
-            mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
-            mEntryDlg.ShowInTaskbar = false;
-            mEntryDlg.MaximizeBox = false;
-            mEntryDlg.MinimizeBox = false;
-            mEntryDlg.AcceptButton = mConfirmEntryBtn;
-            mEntryDlg.CancelButton = mCancelBtn;
+            _mEntryDlg.Size = new Size(490, 390);
+            _mEntryDlg.Text = "Edit Entry";
+            _mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
+            _mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+            _mEntryDlg.ShowInTaskbar = false;
+            _mEntryDlg.MaximizeBox = false;
+            _mEntryDlg.MinimizeBox = false;
+            _mEntryDlg.AcceptButton = _mConfirmEntryBtn;
+            _mEntryDlg.CancelButton = _mCancelBtn;
 
             // Title Label
-            mTitleLbl.Location = new Point(5, 60);
-            mTitleLbl.Text = "Title:\t";
+            _mTitleLbl.Location = new Point(5, 60);
+            _mTitleLbl.Text = "Title:\t";
 
             // Username Label
-            mUserNameLbl.Location = new Point(5, 90);
-            mUserNameLbl.Text = "Username:\t";
+            _mUserNameLbl.Location = new Point(5, 90);
+            _mUserNameLbl.Text = "Username:\t";
 
             // Password Label
-            mPasswordLbl.Location = new Point(5, 120);
-            mPasswordLbl.Text = "Password:\t";
+            _mPasswordLbl.Location = new Point(5, 120);
+            _mPasswordLbl.Text = "Password:\t";
 
             // Password Repeat Label
-            mPasswordRptLbl.Location = new Point(5, 150);
-            mPasswordRptLbl.Text = "Repeat:\t";
+            _mPasswordRptLbl.Location = new Point(5, 150);
+            _mPasswordRptLbl.Text = "Repeat:\t";
 
             // URL Label
-            mURLLbl.Location = new Point(5, 180);
-            mURLLbl.Text = "URL:\t";
+            _mUrlLbl.Location = new Point(5, 180);
+            _mUrlLbl.Text = "URL:\t";
 
             // Notes Label
-            mNotesLbl.Location = new Point(5, 210);
-            mNotesLbl.Text = "Notes:\t";
+            _mNotesLbl.Location = new Point(5, 210);
+            _mNotesLbl.Text = "Notes:\t";
 
             // Title TextBox
-            mTitleTBox.Location = new Point(115, 60);
-            mTitleTBox.Size = new Size(350, 20);
+            _mTitleTBox.Location = new Point(115, 60);
+            _mTitleTBox.Size = new Size(350, 20);
 
             // Username TextBox
-            mUserNameTBox.Location = new Point(115, 90);
-            mUserNameTBox.Size = new Size(350, 20);
+            _mUserNameTBox.Location = new Point(115, 90);
+            _mUserNameTBox.Size = new Size(350, 20);
 
             // Password TextBox
-            mPasswordTBox.Location = new Point(115, 120);
-            mPasswordTBox.Size = new Size(322, 20);
-            mPasswordTBox.UseSystemPasswordChar = true;
+            _mPasswordTBox.Location = new Point(115, 120);
+            _mPasswordTBox.Size = new Size(322, 20);
+            _mPasswordTBox.UseSystemPasswordChar = true;
 
             // Hide/Show Password
-            mShowPasswordBtn.Location = new Point(441, 120);
-            mShowPasswordBtn.Size = new Size(24, 24);
-            mShowPasswordBtn.Image = Image.FromFile("share/icons/16x16/lock.png");
-            mShowPasswordBtn.Click += new EventHandler(OnPasswordMaskClicked);
+            _mShowPasswordBtn.Location = new Point(441, 120);
+            _mShowPasswordBtn.Size = new Size(24, 24);
+            _mShowPasswordBtn.Image = Image.FromFile("share/icons/16x16/lock.png");
+            _mShowPasswordBtn.Click += new EventHandler(OnPasswordMaskClicked);
 
             // Password Repeat TextBox
-            mPasswordRptTBox.Location = new Point(115, 150);
-            mPasswordRptTBox.Size = new Size(322, 20);
-            mPasswordRptTBox.UseSystemPasswordChar = true;
+            _mPasswordRptTBox.Location = new Point(115, 150);
+            _mPasswordRptTBox.Size = new Size(322, 20);
+            _mPasswordRptTBox.UseSystemPasswordChar = true;
 
             // URL TextBox
-            mURLTBox.Location = new Point(115, 180);
-            mURLTBox.Size = new Size(350, 20);
+            _mUrltBox.Location = new Point(115, 180);
+            _mUrltBox.Size = new Size(350, 20);
 
             // Notes RichTextBox
-            mNotesTBox.Location = new Point(115, 210);
-            mNotesTBox.Size = new Size(350, 100);
-            mNotesTBox.Multiline = true;
-            mNotesTBox.AcceptsTab = true;
-            mNotesTBox.WordWrap = true;
+            _mNotesTBox.Location = new Point(115, 210);
+            _mNotesTBox.Size = new Size(350, 100);
+            _mNotesTBox.Multiline = true;
+            _mNotesTBox.AcceptsTab = true;
+            _mNotesTBox.WordWrap = true;
 
             // Edit Entry Button
-            mConfirmEntryBtn.Location = new Point(305, 320);
-            mConfirmEntryBtn.Text = "OK";
-            mConfirmEntryBtn.Click += new EventHandler(OnEditEntryBtnClicked);
+            _mConfirmEntryBtn.Location = new Point(305, 320);
+            _mConfirmEntryBtn.Text = "OK";
+            _mConfirmEntryBtn.Click += new EventHandler(OnEditEntryBtnClicked);
 
             // Cancel Button
-            mCancelBtn.Location = new Point(390, 320);
-            mCancelBtn.Text = "Cancel";
+            _mCancelBtn.Location = new Point(390, 320);
+            _mCancelBtn.Text = "Cancel";
 
-            mEntryDlg.Controls.AddRange(new Control[]
+            _mEntryDlg.Controls.AddRange(new Control[]
             {
-                mTitleLbl,
-                mUserNameLbl,
-                mPasswordLbl,
-                mPasswordRptLbl,
-                mURLLbl,
-                mNotesLbl,
-                mTitleTBox,
-                mUserNameTBox,
-                mPasswordTBox,
-                mPasswordRptTBox,
-                mURLTBox,
-                mNotesTBox,
-                mShowPasswordBtn,
-                mConfirmEntryBtn,
-                mCancelBtn
+                _mTitleLbl,
+                _mUserNameLbl,
+                _mPasswordLbl,
+                _mPasswordRptLbl,
+                _mUrlLbl,
+                _mNotesLbl,
+                _mTitleTBox,
+                _mUserNameTBox,
+                _mPasswordTBox,
+                _mPasswordRptTBox,
+                _mUrltBox,
+                _mNotesTBox,
+                _mShowPasswordBtn,
+                _mConfirmEntryBtn,
+                _mCancelBtn
             });
 
-            AddNewPicture(mEntryDlg, new Size(475, 50), "share/banners/edit-entry-banner.png");
-            if (mLView.SelectedItems.Count > 0)
-                mEntryDlg.ShowDialog();
+            AddNewPicture(_mEntryDlg, new Size(475, 50), "share/banners/edit-entry-banner.png");
+            if (_mLView.SelectedItems.Count > 0)
+                _mEntryDlg.ShowDialog();
         }
         public void InitializeSetKeyFile()
         {
-            mMasterKeyForm = new Form();
+            _mMasterKeyForm = new Form();
 
-            mKeyLabel = new Label();
-            mKeyFileComboBox = new ComboBox();
-            mKeyFileLocationBtn = new Button();
-            mSetKeyBtn = new Button();
-            mCancelKeyBtn = new Button();
+            _mKeyLabel = new Label();
+            _mKeyFileComboBox = new ComboBox();
+            _mKeyFileLocationBtn = new Button();
+            _mSetKeyBtn = new Button();
+            _mCancelKeyBtn = new Button();
 
             // Change Master-Key Dialog
-            mMasterKeyForm.Size = new Size(340, 190);
-            mMasterKeyForm.Text = "Create new Key File";
-            mMasterKeyForm.StartPosition = FormStartPosition.CenterScreen;
-            mMasterKeyForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-            mMasterKeyForm.ShowInTaskbar = false;
-            mMasterKeyForm.MaximizeBox = false;
-            mMasterKeyForm.MinimizeBox = false;
-            mMasterKeyForm.AcceptButton = mSetKeyBtn;
-            mMasterKeyForm.CancelButton = mCancelKeyBtn;
+            _mMasterKeyForm.Size = new Size(340, 190);
+            _mMasterKeyForm.Text = "Create new Key File";
+            _mMasterKeyForm.StartPosition = FormStartPosition.CenterScreen;
+            _mMasterKeyForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            _mMasterKeyForm.ShowInTaskbar = false;
+            _mMasterKeyForm.MaximizeBox = false;
+            _mMasterKeyForm.MinimizeBox = false;
+            _mMasterKeyForm.AcceptButton = _mSetKeyBtn;
+            _mMasterKeyForm.CancelButton = _mCancelKeyBtn;
 
             // Key Label
-            mKeyLabel.Location = new Point(5, 60);
-            mKeyLabel.Font = new Font("Arial", mKeyLabel.Font.Size, FontStyle.Bold);
-            mKeyLabel.Text = "Key File:";
-            mKeyLabel.AutoSize = true;
+            _mKeyLabel.Location = new Point(5, 60);
+            _mKeyLabel.Font = new Font("Arial", _mKeyLabel.Font.Size, FontStyle.Bold);
+            _mKeyLabel.Text = "Key File:";
+            _mKeyLabel.AutoSize = true;
 
             // Key File ComboBox
-            mKeyFileComboBox.Location = new Point(7, 75);
-            mKeyFileComboBox.Size = new Size(280, 20);
-            mKeyFileComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            mKeyFileComboBox.Items.Add(@"F:\pwsafe.enigma"); // TODO: Get All drive directories
-            mKeyFileComboBox.SelectedIndex = 0;
+            _mKeyFileComboBox.Location = new Point(7, 75);
+            _mKeyFileComboBox.Size = new Size(280, 20);
+            _mKeyFileComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            string[] sDrives = Directory.GetLogicalDrives();
+            foreach (string drive in sDrives)
+                _mKeyFileComboBox.Items.Add(drive + "pwsafe.enigma");
+            _mKeyFileComboBox.SelectedIndex = 0;
 
             // Key File Location Button
-            mKeyFileLocationBtn.Location = new Point(290, 74);
-            mKeyFileLocationBtn.Size = new Size(24, 24);
-            mKeyFileLocationBtn.Image = Image.FromFile(@"share/icons/16x16/file_save_as.png");
-            mKeyFileLocationBtn.Click += new EventHandler(OnSetKeyFileBtnClicked);
+            _mKeyFileLocationBtn.Location = new Point(290, 74);
+            _mKeyFileLocationBtn.Size = new Size(24, 24);
+            _mKeyFileLocationBtn.Image = Image.FromFile(@"share/icons/16x16/file_save_as.png");
+            _mKeyFileLocationBtn.Click += new EventHandler(OnSetKeyFileBtnClicked);
 
             // Set Key Button
-            mSetKeyBtn.Location = new Point(160, 120);
-            mSetKeyBtn.Text = "OK";
-            mSetKeyBtn.Click += new EventHandler(OnSaveKeyFileBtnClicked);
+            _mSetKeyBtn.Location = new Point(160, 120);
+            _mSetKeyBtn.Text = "OK";
+            _mSetKeyBtn.Click += new EventHandler(OnSaveKeyFileBtnClicked);
 
             // Cancel Button
-            mCancelKeyBtn.Location = new Point(240, 120);
-            mCancelKeyBtn.Text = "Cancel";
+            _mCancelKeyBtn.Location = new Point(240, 120);
+            _mCancelKeyBtn.Text = "Cancel";
 
-            mMasterKeyForm.Controls.AddRange(new Control[]
+            _mMasterKeyForm.Controls.AddRange(new Control[]
             {
-                mKeyLabel,
-                mKeyFileComboBox,
-                mKeyFileLocationBtn,
-                mSetKeyBtn,
-                mCancelKeyBtn
+                _mKeyLabel,
+                _mKeyFileComboBox,
+                _mKeyFileLocationBtn,
+                _mSetKeyBtn,
+                _mCancelKeyBtn
             });
 
-            AddNewPicture(mMasterKeyForm, new Size(475, 50), @"share/banners/enter-key-banner.png");
-            mMasterKeyForm.ShowDialog();
+            AddNewPicture(_mMasterKeyForm, new Size(475, 50), @"share/banners/create-key-banner.png");
+            _mMasterKeyForm.ShowDialog();
         }
         public void InitializeGetKeyFile()
         {
-            mMasterKeyForm = new Form();
+            _mMasterKeyForm = new Form();
 
-            mKeyLabel = new Label();
-            mKeyFileComboBox = new ComboBox();
-            mKeyFileLocationBtn = new Button();
-            mSetKeyBtn = new Button();
-            mCancelKeyBtn = new Button();
+            _mKeyLabel = new Label();
+            _mKeyFileComboBox = new ComboBox();
+            _mKeyFileLocationBtn = new Button();
+            _mSetKeyBtn = new Button();
+            _mCancelKeyBtn = new Button();
 
             // Change Master-Key Dialog
-            mMasterKeyForm.Size = new Size(340, 190);
-            mMasterKeyForm.Text = "Open Database";
-            mMasterKeyForm.StartPosition = FormStartPosition.CenterScreen;
-            mMasterKeyForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-            mMasterKeyForm.ShowInTaskbar = false;
-            mMasterKeyForm.MaximizeBox = false;
-            mMasterKeyForm.MinimizeBox = false;
-            mMasterKeyForm.AcceptButton = mSetKeyBtn;
-            mMasterKeyForm.CancelButton = mCancelKeyBtn;
+            _mMasterKeyForm.Size = new Size(340, 190);
+            _mMasterKeyForm.Text = "Open Database";
+            _mMasterKeyForm.StartPosition = FormStartPosition.CenterScreen;
+            _mMasterKeyForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            _mMasterKeyForm.ShowInTaskbar = false;
+            _mMasterKeyForm.MaximizeBox = false;
+            _mMasterKeyForm.MinimizeBox = false;
+            _mMasterKeyForm.AcceptButton = _mSetKeyBtn;
+            _mMasterKeyForm.CancelButton = _mCancelKeyBtn;
 
             // Key Label
-            mKeyLabel.Location = new Point(5, 60);
-            mKeyLabel.Font = new Font("Arial", mKeyLabel.Font.Size, FontStyle.Bold);
-            mKeyLabel.Text = "Key File:";
-            mKeyLabel.AutoSize = true;
+            _mKeyLabel.Location = new Point(5, 60);
+            _mKeyLabel.Font = new Font("Arial", _mKeyLabel.Font.Size, FontStyle.Bold);
+            _mKeyLabel.Text = "Key File:";
+            _mKeyLabel.AutoSize = true;
 
             // Key File ComboBox
-            mKeyFileComboBox.Location = new Point(7, 75);
-            mKeyFileComboBox.Size = new Size(280, 20);
-            mKeyFileComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            mKeyFileComboBox.Items.Add(@"F:\pwsafe.enigma"); // TODO: Get All drive directories
-            mKeyFileComboBox.SelectedIndex = 0;
+            _mKeyFileComboBox.Location = new Point(7, 75);
+            _mKeyFileComboBox.Size = new Size(280, 20);
+            _mKeyFileComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            _mKeyFileComboBox.Items.Add(XmlHandler.GetRecentKeyFilePath());
+            _mKeyFileComboBox.SelectedIndex = 0;
 
             // Key File Location Button
-            mKeyFileLocationBtn.Location = new Point(290, 74);
-            mKeyFileLocationBtn.Size = new Size(24, 24);
-            mKeyFileLocationBtn.Image = Image.FromFile(@"share/icons/16x16/file_save_as.png");
-            mKeyFileLocationBtn.Click += new EventHandler(OnGetKeyFileBtnClicked);
+            _mKeyFileLocationBtn.Location = new Point(290, 74);
+            _mKeyFileLocationBtn.Size = new Size(24, 24);
+            _mKeyFileLocationBtn.Image = Image.FromFile(@"share/icons/16x16/file_save_as.png");
+            _mKeyFileLocationBtn.Click += new EventHandler(OnGetKeyFileBtnClicked);
 
             // Set Key Button
-            mSetKeyBtn.Location = new Point(160, 120);
-            mSetKeyBtn.Text = "OK";
-            mSetKeyBtn.Click += new EventHandler(OnLoadKeyFileBtnClicked);
+            _mSetKeyBtn.Location = new Point(160, 120);
+            _mSetKeyBtn.Text = "OK";
+            _mSetKeyBtn.Click += new EventHandler(OnLoadKeyFileBtnClicked);
 
             // Cancel Button
-            mCancelKeyBtn.Location = new Point(240, 120);
-            mCancelKeyBtn.Text = "Cancel";
+            _mCancelKeyBtn.Location = new Point(240, 120);
+            _mCancelKeyBtn.Text = "Cancel";
 
-            mMasterKeyForm.Controls.AddRange(new Control[]
+            _mMasterKeyForm.Controls.AddRange(new Control[]
             {
-                mKeyLabel,
-                mKeyFileComboBox,
-                mKeyFileLocationBtn,
-                mSetKeyBtn,
-                mCancelKeyBtn
+                _mKeyLabel,
+                _mKeyFileComboBox,
+                _mKeyFileLocationBtn,
+                _mSetKeyBtn,
+                _mCancelKeyBtn
             });
 
-            AddNewPicture(mMasterKeyForm, new Size(475, 50), @"share/banners/enter-key-banner.png");
-            mMasterKeyForm.ShowDialog();
+            AddNewPicture(_mMasterKeyForm, new Size(475, 50), @"share/banners/open-key-banner.png");
+            _mMasterKeyForm.ShowDialog();
         }
         //------------------------------------------------------------------------------------
         private void OnCopyUsernameToolStripMenuItemClicked(object sender, EventArgs e)
@@ -803,70 +807,69 @@ namespace enigma_pro
         }
         private void OnPasswordMaskClicked(object sender, EventArgs e)
         {
-            if (mIsPasswordShown == false)
+            if (_mIsPasswordShown == false)
             {
                 // Unlock - Show Password
-                mIsPasswordShown = true;
-                mShowPasswordBtn.Image = Image.FromFile("share/icons/16x16/lock_open.png");
-                mPasswordTBox.UseSystemPasswordChar = false;
-                mPasswordRptTBox.UseSystemPasswordChar = false;
+                _mIsPasswordShown = true;
+                _mShowPasswordBtn.Image = Image.FromFile("share/icons/16x16/lock_open.png");
+                _mPasswordTBox.UseSystemPasswordChar = false;
+                _mPasswordRptTBox.UseSystemPasswordChar = false;
             }
             else
             {
                 // Lock - Hide Password
-                mIsPasswordShown = false;
-                mShowPasswordBtn.Image = Image.FromFile("share/icons/16x16/lock.png");
-                mPasswordTBox.UseSystemPasswordChar = true;
-                mPasswordRptTBox.UseSystemPasswordChar = true;
+                _mIsPasswordShown = false;
+                _mShowPasswordBtn.Image = Image.FromFile("share/icons/16x16/lock.png");
+                _mPasswordTBox.UseSystemPasswordChar = true;
+                _mPasswordRptTBox.UseSystemPasswordChar = true;
             }
         }
         private void OnContextMenuOpening(object sender, CancelEventArgs e)
         {
-            if (mLView.SelectedItems.Count == 1)
+            if (_mLView.SelectedItems.Count == 1)
             {
-                mCopyUsernameToolStripMenuItem.Enabled = true;
-                mCopyPasswordToolStripMenuItem.Enabled = true;
-                mEditViewEntryToolStripMenuItem.Enabled = true;
-                mDuplicateEntryToolStripMenuItem.Enabled = true;
-                mOpenURLToolStripMenuItem.Enabled = true;
-                mDeleteEntryToolStripMenuItem.Enabled = true;
+                _mCopyUsernameToolStripMenuItem.Enabled = true;
+                _mCopyPasswordToolStripMenuItem.Enabled = true;
+                _mEditViewEntryToolStripMenuItem.Enabled = true;
+                _mDuplicateEntryToolStripMenuItem.Enabled = true;
+                _mOpenUrlToolStripMenuItem.Enabled = true;
+                _mDeleteEntryToolStripMenuItem.Enabled = true;
             }
-            else if (mLView.SelectedItems.Count > 1)
+            else if (_mLView.SelectedItems.Count > 1)
             {
-                mCopyUsernameToolStripMenuItem.Enabled = false;
-                mCopyPasswordToolStripMenuItem.Enabled = false;
-                mEditViewEntryToolStripMenuItem.Enabled = false;
-                mDuplicateEntryToolStripMenuItem.Enabled = false;
-                mOpenURLToolStripMenuItem.Enabled = false;
+                _mCopyUsernameToolStripMenuItem.Enabled = false;
+                _mCopyPasswordToolStripMenuItem.Enabled = false;
+                _mEditViewEntryToolStripMenuItem.Enabled = false;
+                _mDuplicateEntryToolStripMenuItem.Enabled = false;
+                _mOpenUrlToolStripMenuItem.Enabled = false;
             }
             else
             {
-                mCopyUsernameToolStripMenuItem.Enabled = false;
-                mCopyPasswordToolStripMenuItem.Enabled = false;
-                mEditViewEntryToolStripMenuItem.Enabled = false;
-                mDuplicateEntryToolStripMenuItem.Enabled = false;
-                mOpenURLToolStripMenuItem.Enabled = false;
-                mDeleteEntryToolStripMenuItem.Enabled = false;
+                _mCopyUsernameToolStripMenuItem.Enabled = false;
+                _mCopyPasswordToolStripMenuItem.Enabled = false;
+                _mEditViewEntryToolStripMenuItem.Enabled = false;
+                _mDuplicateEntryToolStripMenuItem.Enabled = false;
+                _mOpenUrlToolStripMenuItem.Enabled = false;
+                _mDeleteEntryToolStripMenuItem.Enabled = false;
             }
         }
         private void OnListViewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.A && e.Control)
-            {
-                foreach (ListViewItem item in mLView.Items)
-                    item.Selected = true;
-            }
+            if (e.KeyCode != Keys.A || !e.Control) return;
+            foreach (ListViewItem item in _mLView.Items)
+                item.Selected = true;
         }
+
         private void OnListViewColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
         {
-            if (mLView.Columns[e.ColumnIndex].Width < mMinimumColumnWidth)
-                mLView.Columns[e.ColumnIndex].Width = mMinimumColumnWidth;
+            if (_mLView.Columns[e.ColumnIndex].Width < _mMinimumColumnWidth)
+                _mLView.Columns[e.ColumnIndex].Width = _mMinimumColumnWidth;
         }
         private void OnLinkLblClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             // Open Github URL
-            mLinkLbl.LinkVisited = true;
-            System.Diagnostics.Process.Start(mLinkLbl.Text);
+            _mLinkLbl.LinkVisited = true;
+            System.Diagnostics.Process.Start(_mLinkLbl.Text);
         }
         private void OnSetKeyFileBtnClicked(object sender, EventArgs e)
         {
@@ -877,7 +880,7 @@ namespace enigma_pro
             };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                mKeyFileComboBox.Items[0] = saveFileDialog.FileName;
+                _mKeyFileComboBox.Items[0] = saveFileDialog.FileName;
         }
         private void OnGetKeyFileBtnClicked(object sender, EventArgs e)
         {
@@ -888,90 +891,97 @@ namespace enigma_pro
             };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
-                mKeyFileComboBox.Items[0] = openFileDialog.FileName;
+                _mKeyFileComboBox.Items[0] = openFileDialog.FileName;
         }
         private void OnSaveKeyFileBtnClicked(object sender, EventArgs e)
         {
-            _mKeyPathSave = mKeyFileComboBox.Items[0].ToString();
-            StreamWriter fsSecretKey = new StreamWriter(_mKeyPathSave);
+            _mKeyPathSave = _mKeyFileComboBox.SelectedItem.ToString();
+            try
+            {
+                StreamWriter fsSecretKey = new StreamWriter(_mKeyPathSave);
+                string sSecretKey = Cryptography.GenerateKey();
+                // For additional security Pin the key
+                // A new GCHandle that protects the object from garbage collection.
+                // This GCHandle must be released with Free when it is no longer needed.
+                GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned);
+                fsSecretKey.WriteLine(sSecretKey);
+                fsSecretKey.Close();
+                // Free the key from memory
+                Cryptography.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
+                gch.Free();
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                MessageBox.Show(exception.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Warning); return;
+            }
 
-            string sSecretKey = Cryptography.GenerateKey();
-            // For additional security Pin the key
-            // A new GCHandle that protects the object from garbage collection.
-            // This GCHandle must be released with Free when it is no longer needed.
-            GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned);
-            fsSecretKey.WriteLine(sSecretKey);
-            fsSecretKey.Close();
-            // Free the key from memory
-            Cryptography.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
-            gch.Free();
             _mKeySet = true;
-            mMasterKeyForm.Close();
+            _mMasterKeyForm.Close();
         }
         private void OnLoadKeyFileBtnClicked(object sender, EventArgs e)
         {
-            _mKeyPath = mKeyFileComboBox.Items[0].ToString();
+            _mKeyPath = _mKeyFileComboBox.SelectedItem.ToString();
 
-            mMasterKeyForm.Close();
+            _mMasterKeyForm.Close();
         }
         private void OnAddEntryBtnClicked(object sender, EventArgs e)
         {
-            if (mPasswordTBox.Text == mPasswordRptTBox.Text)
+            if (_mPasswordTBox.Text == _mPasswordRptTBox.Text)
             {
-                AddNewEntry(mTitleTBox.Text, mUserNameTBox.Text, mPasswordTBox.Text, mURLTBox.Text, mNotesTBox.Text);
-                mEntryDlg.Close();
+                AddNewEntry(_mTitleTBox.Text, _mUserNameTBox.Text, _mPasswordTBox.Text, _mUrltBox.Text, _mNotesTBox.Text);
+                _mEntryDlg.Close();
             }
             else
-                MessageBox.Show("Password and repeated password don't match!", mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Password and repeated password don't match!", _mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         private void OnEditEntryBtnClicked(object sender, EventArgs e)
         {
-            if (mPasswordTBox.Text == mPasswordRptTBox.Text)
+            if (_mPasswordTBox.Text == _mPasswordRptTBox.Text)
             {
-                EditEntry(mTitleTBox.Text, mUserNameTBox.Text, mPasswordTBox.Text, mURLTBox.Text, mNotesTBox.Text);
-                mEntryDlg.Close();
+                EditEntry(_mTitleTBox.Text, _mUserNameTBox.Text, _mPasswordTBox.Text, _mUrltBox.Text, _mNotesTBox.Text);
+                _mEntryDlg.Close();
             }
             else
-                MessageBox.Show("Password and repeated password don't match!", mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Password and repeated password don't match!", _mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         //------------------------------------------------------------------------------------
-        private void AddNewEntry(string Title, string Username, string Password, string URL, string Notes)
+        private void AddNewEntry(string title, string username, string password, string url, string notes)
         {
-            ListViewItem LVItems = new ListViewItem(Title);
+            ListViewItem lvItems = new ListViewItem(title);
 
-            LVItems.SubItems.Add(Username);
-            LVItems.SubItems.Add(Password);
-            if (URL.StartsWith("http://") || URL.StartsWith("https://"))
-                LVItems.SubItems.Add(URL);
+            lvItems.SubItems.Add(username);
+            lvItems.SubItems.Add(password);
+            if (url.StartsWith("http://") || url.StartsWith("https://"))
+                lvItems.SubItems.Add(url);
             else
             {
-                string formattedUrl = URL.Insert(0, "http://");
-                LVItems.SubItems.Add(formattedUrl);
+                string formattedUrl = url.Insert(0, "http://");
+                lvItems.SubItems.Add(formattedUrl);
             }
-            LVItems.SubItems.Add(Notes);
+            lvItems.SubItems.Add(notes);
 
-            mLView.Items.Add(LVItems);
+            _mLView.Items.Add(lvItems);
 
             FitColumnWidth();
             FillListViewItemColors();
         }
-        private void EditEntry(string Title, string Username, string Password, string URL, string Notes)
+        private void EditEntry(string title, string username, string password, string url, string notes)
         {
-            ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
+            ListView.SelectedListViewItemCollection selectedLvItem = _mLView.SelectedItems;
 
-            foreach (ListViewItem item in selectedLVItem)
+            foreach (ListViewItem item in selectedLvItem)
             {
-                item.SubItems[0].Text = Title;
-                item.SubItems[1].Text = Username;
-                item.SubItems[2].Text = Password;
-                if (URL.StartsWith("http://") || URL.StartsWith("https://"))
-                    item.SubItems[3].Text = URL;
+                item.SubItems[0].Text = title;
+                item.SubItems[1].Text = username;
+                item.SubItems[2].Text = password;
+                if (url.StartsWith("http://") || url.StartsWith("https://"))
+                    item.SubItems[3].Text = url;
                 else
                 {
-                    string FormattedURL = URL.Insert(0, "http://");
-                    item.SubItems[3].Text = FormattedURL;
+                    string formattedUrl = url.Insert(0, "http://");
+                    item.SubItems[3].Text = formattedUrl;
                 }
-                item.SubItems[4].Text = Notes;
+                item.SubItems[4].Text = notes;
             }
 
             FitColumnWidth();

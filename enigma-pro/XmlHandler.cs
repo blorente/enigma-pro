@@ -8,8 +8,10 @@ namespace enigma_pro
 {
     internal class XmlHandler
     {
+        private static string _mSRecentKeyFilePath;
+
         /// <summary>
-        /// Save & Load ListView entries into XML-Files
+        /// Export ListView entries into raw XML-Files
         /// </summary>
         /// <param name="listView"></param>
         /// <param name="saveFileDialog"></param>
@@ -55,7 +57,11 @@ namespace enigma_pro
             xmlWriter.WriteEndElement();
             xmlWriter.Close();
         }
-
+        /// <summary>
+        /// Import ListView entries from raw XML-Files
+        /// </summary>
+        /// <param name="listView"></param>
+        /// <param name="openFileDialog"></param>
         public static void ImportFromXml(ListView listView, OpenFileDialog openFileDialog)
         {
             XDocument xDoc = XDocument.Load(openFileDialog.FileName);
@@ -73,7 +79,11 @@ namespace enigma_pro
                 listView.Items.Add(lvItem);
             }
         }
-
+        /// <summary>
+        /// Export ListView entries into encrypted XML-Files for saveDialog
+        /// </summary>
+        /// <param name="listView"></param>
+        /// <param name="saveFileDialog"></param>
         public static void ExportEncryptedToXml(ListView listView, SaveFileDialog saveFileDialog)
         {
             string sEncryptionKey = null;
@@ -130,9 +140,15 @@ namespace enigma_pro
             xmlWriter.WriteEndElement();
             xmlWriter.Close();
         }
-
+        /// <summary>
+        /// Overload: Export ListView entries into encrypted XML-Files
+        /// </summary>
+        /// <param name="listView"></param>
+        /// <param name="sFileName"></param>
         public static void ExportEncryptedToXml(ListView listView, string sFileName)
         {
+            if (string.IsNullOrEmpty(sFileName)) return;
+
             string sEncryptionKey = null;
 
             XmlWriterSettings xmlSettings = new XmlWriterSettings
@@ -154,6 +170,7 @@ namespace enigma_pro
                 sEncryptionKey = reader.ReadLine();
                 reader.Close();
             }
+
             XmlWriter xmlWriter = XmlWriter.Create(sFileName, xmlSettings);
             xmlWriter.WriteStartElement("pwlist");
 
@@ -187,7 +204,11 @@ namespace enigma_pro
             xmlWriter.WriteEndElement();
             xmlWriter.Close();
         }
-
+        /// <summary>
+        /// Import ListView entries from encrypted XML-Files
+        /// </summary>
+        /// <param name="listView"></param>
+        /// <param name="openFileDialog"></param>
         public static void ImportEncryptedFromXml(ListView listView, OpenFileDialog openFileDialog)
         {
             XDocument xDoc = XDocument.Load(openFileDialog.FileName);
@@ -211,7 +232,11 @@ namespace enigma_pro
                 listView.Items.Add(lvItem);
             }
         }
-
+        /// <summary>
+        /// Save MainWindow settings XML-File
+        /// </summary>
+        /// <param name="Window"></param>
+        /// <param name="sFilename"></param>
         public static void SaveConfigXml(Form Window, string sFilename)
         {
             XmlWriterSettings xmlSettings = new XmlWriterSettings
@@ -221,22 +246,77 @@ namespace enigma_pro
             };
 
             XmlWriter xmlWriter = XmlWriter.Create(sFilename, xmlSettings);
-            xmlWriter.WriteStartElement(Window.Text);
+            xmlWriter.WriteStartElement("mainWindow");
 
-            xmlWriter.WriteStartElement("properties");
+            xmlWriter.WriteStartElement("settings");
 
-            xmlWriter.WriteStartElement("size");
-            xmlWriter.WriteString(Window.Size.ToString());
+            xmlWriter.WriteStartElement("width");
+            xmlWriter.WriteString(Window.Width.ToString());
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("startPosition");
-            xmlWriter.WriteString(Window.StartPosition.ToString());
+            xmlWriter.WriteStartElement("height");
+            xmlWriter.WriteString(Window.Height.ToString());
             xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("left");
+            xmlWriter.WriteString(Window.Location.X.ToString());
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("top");
+            xmlWriter.WriteString(Window.Location.Y.ToString());
+            xmlWriter.WriteEndElement();
+
+            if (File.Exists(DialogManager.GetKeyFilePath()))
+            {
+                xmlWriter.WriteStartElement("recentKeyPath");
+                xmlWriter.WriteString(DialogManager.GetKeyFilePath());
+                xmlWriter.WriteEndElement();
+            }
+            if (File.Exists(DialogManager.GetKeyFilePathSave()))
+            {
+                xmlWriter.WriteStartElement("recentKeyPath");
+                xmlWriter.WriteString(DialogManager.GetKeyFilePathSave());
+                xmlWriter.WriteEndElement();
+            }
 
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndElement();
             xmlWriter.Close();
+        }
+        /// <summary>
+        /// Load MainWindow settings XML-File
+        /// </summary>
+        /// <param name="Window"></param>
+        /// <param name="sFilename"></param>
+        public static void LoadConfigXml(Form Window, string sFilename)
+        {
+            if (!File.Exists(sFilename)) { return; }
+            using (XmlReader xmlReader = XmlReader.Create(sFilename))
+            {
+                while (xmlReader.Read())
+                {
+                    if (xmlReader.ReadToFollowing("width"))
+                        Window.Width = xmlReader.ReadElementContentAsInt();
+                    if (xmlReader.ReadToFollowing("height"))
+                        Window.Height = xmlReader.ReadElementContentAsInt();
+                    if (xmlReader.ReadToFollowing("left"))
+                        Window.Left = xmlReader.ReadElementContentAsInt();
+                    if (xmlReader.ReadToFollowing("top"))
+                        Window.Top = xmlReader.ReadElementContentAsInt();
+                    if (xmlReader.ReadToFollowing("recentKeyPath"))
+                        _mSRecentKeyFilePath = xmlReader.ReadElementContentAsString();
+                }
+                xmlReader.Close();
+            }
+        }
+        /// <summary>
+        /// Try to retrieve recent keyfile path
+        /// </summary>
+        /// <returns></returns>
+        public static string GetRecentKeyFilePath()
+        {
+            return string.IsNullOrEmpty(_mSRecentKeyFilePath) ? @"F:\pwsafe.enigma" : _mSRecentKeyFilePath;
         }
     }
 }

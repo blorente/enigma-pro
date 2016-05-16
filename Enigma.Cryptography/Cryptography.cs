@@ -12,7 +12,7 @@ namespace Enigma.Cryptography
         public static string GenerateKey()
         {
             DESCryptoServiceProvider desCrypto = (DESCryptoServiceProvider)DES.Create();
-            return Encoding.ASCII.GetString(desCrypto.Key);
+            return Convert.ToBase64String(desCrypto.Key);
         }
 
         public static string AES_Encrypt(string sPlainData, string sKey)
@@ -21,8 +21,8 @@ namespace Enigma.Cryptography
 
             DESCryptoServiceProvider aes = new DESCryptoServiceProvider
             {
-                Key = Encoding.ASCII.GetBytes(sKey),
-                IV = Encoding.ASCII.GetBytes(sKey)
+                Key = Convert.FromBase64String(sKey),
+                IV = Convert.FromBase64String(sKey)
             };
 
             ICryptoTransform pEncCryptoTransform = aes.CreateEncryptor();
@@ -37,14 +37,14 @@ namespace Enigma.Cryptography
 
             DESCryptoServiceProvider aes = new DESCryptoServiceProvider
             {
-                Key = Encoding.ASCII.GetBytes(sKey),
-                IV = Encoding.ASCII.GetBytes(sKey)
+                Key = Convert.FromBase64String(sKey),
+                IV = Convert.FromBase64String(sKey)
             };
 
             ICryptoTransform pDecCryptoTransform = aes.CreateDecryptor();
             byte[] bDataDecryptedBytes = pDecCryptoTransform.TransformFinalBlock(bDataBuffer, 0, bDataBuffer.Length);
             pDecCryptoTransform.Dispose();
-
+            
             return Encoding.ASCII.GetString(bDataDecryptedBytes);
         }
     }

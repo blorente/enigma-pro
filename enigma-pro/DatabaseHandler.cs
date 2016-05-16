@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace enigma_pro
 {
-    class DatabaseHandler
+    internal class DatabaseHandler
     {
         public static void NewDatabase(DialogManager dialogManager, Form Window)
         {

@@ -258,9 +258,9 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Menu = this.mainMenu;
             this.Name = "MainWindow";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Enigma-Pro";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWindow_FormClosed);
+            this.Load += new System.EventHandler(this.MainWindow_Load);
             this.SizeChanged += new System.EventHandler(this.MainWindow_SizeChanged);
             this.ResumeLayout(false);
 
