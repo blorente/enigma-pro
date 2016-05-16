@@ -1,59 +1,40 @@
 ﻿using System;
-using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace enigma_pro
 {
     public partial class MainWindow : Form
     {
-        private DialogManager mAboutDlg = null;
-        private DialogManager mListView = null;
-        private DialogManager mDialog = null;
+        private DialogManager mAboutDlg;
+        private DialogManager mMasterKeyDlg;
+        private DialogManager mListView;
+        private readonly DialogManager mDialog;
+        
+        private static string _mSDatabaseFilePath;
 
         public MainWindow()
         {
             InitializeComponent();
 
             mDialog = new DialogManager();
-            if (mDialog != null)
-                mDialog.AddNewLabel(this, "Welcome!");
+            mDialog?.AddNewLabel(this, "Welcome!");
         }
 
-        private void SetMenuItemProperty(MenuItem menuItem, bool Toggle)
+        private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
-            menuItem.Enabled = Toggle;
+            //XmlHandler.SaveConfigXml(this, "Config.xml");
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ReEnableMenuItems()
         {
-            mAboutDlg = new DialogManager();
-            if (mAboutDlg != null)
-                mAboutDlg.InitializeAboutDialog();
-        }
-
-        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void deleteEntryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (mListView != null)
-            {
-                foreach (ListViewItem item in mListView.MLView.SelectedItems)
-                {
-                    if (item.Selected)
-                        mListView.MLView.Items.Remove(item);
-                }
-
-                mListView.FillListViewItemColors();
-            }
-        }
-
-        private void addNewEntryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (mListView != null)
-                mListView.InitializeAddNewEntry();
+            DialogManager.SetMenuItemProperty(addEntryMenuItem, true);
+            DialogManager.SetMenuItemProperty(editViewEntryMenuItem, true);
+            DialogManager.SetMenuItemProperty(delEntryMenuItem, true);
+            DialogManager.SetMenuItemProperty(duplicateEntryMenuItem, true);
+            DialogManager.SetMenuItemProperty(cpUsernameMenuItem, true);
+            DialogManager.SetMenuItemProperty(cpPasswordMenuItem, true);
+            DialogManager.SetMenuItemProperty(openURLMenuItem, true);
         }
 
         private void MainWindow_SizeChanged(object sender, EventArgs e)
@@ -62,91 +43,58 @@ namespace enigma_pro
                 mListView.MColumnNotes.Width = -2;
         }
 
-        private void copyUsernameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (mListView != null)
-                mListView.CopyUsernameToClipboard();
-        }
-
-        private void openURLToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (mListView != null)
-                mListView.OpenURL();
-        }
-
-        private void copyPasswordToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (mListView != null)
-                mListView.CopyPasswordToClipboard();
-        }
-
         private void newDBMenuItem_Click(object sender, EventArgs e)
         {
-            addEntryMenuItem.Enabled = true;
-            editViewEntryMenuItem.Enabled = true;
-            delEntryMenuItem.Enabled = true;
-            duplicateEntryMenuItem.Enabled = true;
-            cpUsernameMenuItem.Enabled = true;
-            cpPasswordMenuItem.Enabled = true;
-            openURLMenuItem.Enabled = true;
+            mMasterKeyDlg = new DialogManager();
+            mMasterKeyDlg?.InitializeSetKeyFile();
 
-            newDBMenuItem.Enabled = false;
-            mDialog.MLabel.Visible = false;
-
+            if (!DialogManager.MKeySet) return;
             mListView = new DialogManager();
-            if (mListView != null)
-            {
-                mListView.InitializeListView(this, new Size(this.Width - 48, this.Height - 86));
-                DialogManager.SetWindowTheme(mListView.MLView.Handle, "Explorer", null);
-            }
+            DatabaseHandler.NewDatabase(mListView, this);
+            mDialog.MLabel.Visible = false;
+            ReEnableMenuItems();
+            DialogManager.SetMenuItemProperty(newDBMenuItem, false);
         }
 
         private void quitMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void addEntryMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView != null)
-                mListView.InitializeAddNewEntry();
+            mListView?.InitializeAddNewEntry();
         }
 
         private void editViewEntryMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView != null)
-                mListView.InitializeEditEntry();
+            mListView?.InitializeEditEntry();
         }
 
         private void delEntryMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView != null)
-                mListView.DeleteSelectedEntry();
+            mListView?.DeleteSelectedEntry();
         }
 
         private void cpUsernameMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView != null)
-                mListView.CopyUsernameToClipboard();
+            mListView?.CopyUsernameToClipboard();
         }
 
         private void cpPasswordMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView != null)
-                mListView.CopyPasswordToClipboard();
+            mListView?.CopyPasswordToClipboard();
         }
 
         private void openURLMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView != null)
-                mListView.OpenURL();
+            mListView?.OpenUrl();
         }
 
         private void aboutMenuItem_Click(object sender, EventArgs e)
         {
             mAboutDlg = new DialogManager();
-            if (mAboutDlg != null)
-                mAboutDlg.InitializeAboutDialog();
+            mAboutDlg?.InitializeAboutDialog();
         }
 
         private void entriesMenuItem_Select(object sender, EventArgs e)
@@ -155,66 +103,151 @@ namespace enigma_pro
             {
                 if (mListView.MLView.SelectedItems.Count == 1)
                 {
-                    SetMenuItemProperty(editViewEntryMenuItem, true);
-                    SetMenuItemProperty(delEntryMenuItem, true);
-                    SetMenuItemProperty(duplicateEntryMenuItem, true);
-                    SetMenuItemProperty(cpUsernameMenuItem, true);
-                    SetMenuItemProperty(cpPasswordMenuItem, true);
-                    SetMenuItemProperty(openURLMenuItem, true);
+                    DialogManager.SetMenuItemProperty(editViewEntryMenuItem, true);
+                    DialogManager.SetMenuItemProperty(delEntryMenuItem, true);
+                    DialogManager.SetMenuItemProperty(duplicateEntryMenuItem, true);
+                    DialogManager.SetMenuItemProperty(cpUsernameMenuItem, true);
+                    DialogManager.SetMenuItemProperty(cpPasswordMenuItem, true);
+                    DialogManager.SetMenuItemProperty(openURLMenuItem, true);
                 }
                 else if (mListView.MLView.SelectedItems.Count > 1)
                 {
-                    SetMenuItemProperty(editViewEntryMenuItem, false);
-                    SetMenuItemProperty(duplicateEntryMenuItem, false);
-                    SetMenuItemProperty(cpUsernameMenuItem, false);
-                    SetMenuItemProperty(cpPasswordMenuItem, false);
-                    SetMenuItemProperty(openURLMenuItem, false);
+                    DialogManager.SetMenuItemProperty(editViewEntryMenuItem, false);
+                    DialogManager.SetMenuItemProperty(duplicateEntryMenuItem, false);
+                    DialogManager.SetMenuItemProperty(cpUsernameMenuItem, false);
+                    DialogManager.SetMenuItemProperty(cpPasswordMenuItem, false);
+                    DialogManager.SetMenuItemProperty(openURLMenuItem, false);
                 }
                 else
                 {
-                    SetMenuItemProperty(editViewEntryMenuItem, false);
-                    SetMenuItemProperty(delEntryMenuItem, false);
-                    SetMenuItemProperty(duplicateEntryMenuItem, false);
-                    SetMenuItemProperty(cpUsernameMenuItem, false);
-                    SetMenuItemProperty(cpPasswordMenuItem, false);
-                    SetMenuItemProperty(openURLMenuItem, false);
+                    DialogManager.SetMenuItemProperty(editViewEntryMenuItem, false);
+                    DialogManager.SetMenuItemProperty(delEntryMenuItem, false);
+                    DialogManager.SetMenuItemProperty(duplicateEntryMenuItem, false);
+                    DialogManager.SetMenuItemProperty(cpUsernameMenuItem, false);
+                    DialogManager.SetMenuItemProperty(cpPasswordMenuItem, false);
+                    DialogManager.SetMenuItemProperty(openURLMenuItem, false);
                 }
             }
             else
             {
-                SetMenuItemProperty(addEntryMenuItem, false);
-                SetMenuItemProperty(editViewEntryMenuItem, false);
-                SetMenuItemProperty(delEntryMenuItem, false);
-                SetMenuItemProperty(duplicateEntryMenuItem, false);
-                SetMenuItemProperty(cpUsernameMenuItem, false);
-                SetMenuItemProperty(cpPasswordMenuItem, false);
-                SetMenuItemProperty(openURLMenuItem, false);
+                DialogManager.SetMenuItemProperty(addEntryMenuItem, false);
+                DialogManager.SetMenuItemProperty(editViewEntryMenuItem, false);
+                DialogManager.SetMenuItemProperty(delEntryMenuItem, false);
+                DialogManager.SetMenuItemProperty(duplicateEntryMenuItem, false);
+                DialogManager.SetMenuItemProperty(cpUsernameMenuItem, false);
+                DialogManager.SetMenuItemProperty(cpPasswordMenuItem, false);
+                DialogManager.SetMenuItemProperty(openURLMenuItem, false);
             }
         }
 
         private void closeDBMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView != null && this.Controls.Contains(mListView.MLView))
-            {
-                DialogResult dialogResult = MessageBox.Show("Are you sure you want to close this Database?", "Close?", MessageBoxButtons.OKCancel,
-                                                                                                                   MessageBoxIcon.Question,
-                                                                                                                   MessageBoxDefaultButton.Button1);
-                if (dialogResult == DialogResult.OK)
-                {
-                    this.Controls.Remove(mListView.MLView);
-                    mListView.MLView.Dispose();
-                    mListView = null;
+            if (mListView == null || !Controls.Contains(mListView.MLView)) return;
 
-                    SetMenuItemProperty(newDBMenuItem, true);
-                    mDialog.MLabel.Visible = true;
-                }
-            }
+            DatabaseHandler.CloseDatabase(mListView.MLView, this);
+            DialogManager.SetMenuItemProperty(newDBMenuItem, true);
+            mDialog.MLabel.Visible = true;
+            mListView = null;
+            Text = "Enigma-Pro";
         }
 
         private void duplicateEntryMenuItem_Click(object sender, EventArgs e)
         {
-            if (mListView != null)
-                mListView.DuplicateEntry();
+            mListView?.DuplicateEntry();
+        }
+
+        private void saveDBMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mListView == null || mListView.MLView.Items.Count <= 0) return;
+            XmlHandler.ExportEncryptedToXml(mListView.MLView, _mSDatabaseFilePath);
+        }
+
+        private void openDBMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Enigma DB-File (*.edb)|*.edb",
+                Title = "Open Database File"
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // If Database exists -> close current db
+                if (mListView != null && Controls.Contains(mListView.MLView))
+                {
+                    DatabaseHandler.CloseDatabase(mListView.MLView, this);
+                    DialogManager.SetMenuItemProperty(newDBMenuItem, true);
+                    mDialog.MLabel.Visible = true;
+                }
+
+                // Create new Database
+                mListView = new DialogManager();
+                DatabaseHandler.OpenDatabase(mListView, this, openFileDialog);
+
+                mDialog.MLabel.Visible = false;
+                ReEnableMenuItems();
+                DialogManager.SetMenuItemProperty(newDBMenuItem, false);
+
+                _mSDatabaseFilePath = Path.GetFullPath(openFileDialog.FileName);
+                this.Text = $"{Path.GetFileName(openFileDialog.FileName)} - Enigma-Pro";
+            }
+        }
+
+        private void dbMenuItem_Select(object sender, EventArgs e)
+        {
+            DialogManager.SetMenuItemProperty(closeDBMenuItem, mListView != null);
+            DialogManager.SetMenuItemProperty(importDatabaseMenuItem, mListView != null);
+            DialogManager.SetMenuItemProperty(exportDatabaseMenuItem, mListView != null);
+            DialogManager.SetMenuItemProperty(saveDBMenuItem, mListView != null);
+            DialogManager.SetMenuItemProperty(saveAsDBMenuItem, mListView != null);
+        }
+
+        private void changeMasterKeyMenuItem_Click(object sender, EventArgs e)
+        {
+            //TODO: NOT NEEDED!!!
+        }
+
+        private void saveAsDBMenuItem_Click(object sender, EventArgs e)
+        {
+            // If any item exists in listview
+            if (mListView == null || mListView.MLView.Items.Count <= 0) return;
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Enigma DB-File (*.edb)|*.edb",
+                Title = "Save Database File"
+            };
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+            XmlHandler.ExportEncryptedToXml(mListView.MLView, saveFileDialog);
+
+            _mSDatabaseFilePath = Path.GetFullPath(saveFileDialog.FileName);
+            this.Text = $"{Path.GetFileName(saveFileDialog.FileName)} - MainWindow";
+        }
+
+        private void importToXMLFileMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "XML File (*.*)|*.xml",
+                Title = "Open File"
+            };
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+            XmlHandler.ImportFromXml(mListView.MLView, openFileDialog);
+        }
+
+        private void exportToXMLFileMenuItem_Click(object sender, EventArgs e)
+        {
+            // If any item exists in listview
+            if (mListView == null || mListView.MLView.Items.Count <= 0) return;
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "XML File (*.*)|*.xml",
+                Title = "Save As"
+            };
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+            XmlHandler.ExportToXml(mListView.MLView, saveFileDialog);
         }
     }
 }

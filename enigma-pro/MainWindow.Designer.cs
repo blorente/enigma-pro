@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.dbMenuItem = new System.Windows.Forms.MenuItem();
             this.newDBMenuItem = new System.Windows.Forms.MenuItem();
@@ -38,8 +39,10 @@
             this.saveDBMenuItem = new System.Windows.Forms.MenuItem();
             this.saveAsDBMenuItem = new System.Windows.Forms.MenuItem();
             this.menuItem8 = new System.Windows.Forms.MenuItem();
-            this.changeMasterKeyMenuItem = new System.Windows.Forms.MenuItem();
-            this.exportToCSVFileMenuItem = new System.Windows.Forms.MenuItem();
+            this.importDatabaseMenuItem = new System.Windows.Forms.MenuItem();
+            this.importToXMLFileMenuItem = new System.Windows.Forms.MenuItem();
+            this.exportDatabaseMenuItem = new System.Windows.Forms.MenuItem();
+            this.exportToXMLFileMenuItem = new System.Windows.Forms.MenuItem();
             this.menuItem11 = new System.Windows.Forms.MenuItem();
             this.quitMenuItem = new System.Windows.Forms.MenuItem();
             this.entriesMenuItem = new System.Windows.Forms.MenuItem();
@@ -73,11 +76,12 @@
             this.saveDBMenuItem,
             this.saveAsDBMenuItem,
             this.menuItem8,
-            this.changeMasterKeyMenuItem,
-            this.exportToCSVFileMenuItem,
+            this.importDatabaseMenuItem,
+            this.exportDatabaseMenuItem,
             this.menuItem11,
             this.quitMenuItem});
-            this.dbMenuItem.Text = "Database";
+            this.dbMenuItem.Text = "File";
+            this.dbMenuItem.Select += new System.EventHandler(this.dbMenuItem_Select);
             // 
             // newDBMenuItem
             // 
@@ -91,6 +95,7 @@
             this.openDBMenuItem.Index = 1;
             this.openDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
             this.openDBMenuItem.Text = "Open Database";
+            this.openDBMenuItem.Click += new System.EventHandler(this.openDBMenuItem_Click);
             // 
             // closeDBMenuItem
             // 
@@ -109,27 +114,46 @@
             this.saveDBMenuItem.Index = 4;
             this.saveDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
             this.saveDBMenuItem.Text = "Save Database";
+            this.saveDBMenuItem.Click += new System.EventHandler(this.saveDBMenuItem_Click);
             // 
             // saveAsDBMenuItem
             // 
             this.saveAsDBMenuItem.Index = 5;
             this.saveAsDBMenuItem.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftS;
             this.saveAsDBMenuItem.Text = "Save Database as...";
+            this.saveAsDBMenuItem.Click += new System.EventHandler(this.saveAsDBMenuItem_Click);
             // 
             // menuItem8
             // 
             this.menuItem8.Index = 6;
             this.menuItem8.Text = "-";
             // 
-            // changeMasterKeyMenuItem
+            // importDatabaseMenuItem
             // 
-            this.changeMasterKeyMenuItem.Index = 7;
-            this.changeMasterKeyMenuItem.Text = "Change Master-Key";
+            this.importDatabaseMenuItem.Index = 7;
+            this.importDatabaseMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.importToXMLFileMenuItem});
+            this.importDatabaseMenuItem.Text = "Import";
+            this.importDatabaseMenuItem.Click += new System.EventHandler(this.changeMasterKeyMenuItem_Click);
             // 
-            // exportToCSVFileMenuItem
+            // importToXMLFileMenuItem
             // 
-            this.exportToCSVFileMenuItem.Index = 8;
-            this.exportToCSVFileMenuItem.Text = "Export to CSV";
+            this.importToXMLFileMenuItem.Index = 0;
+            this.importToXMLFileMenuItem.Text = "XML File...";
+            this.importToXMLFileMenuItem.Click += new System.EventHandler(this.importToXMLFileMenuItem_Click);
+            // 
+            // exportDatabaseMenuItem
+            // 
+            this.exportDatabaseMenuItem.Index = 8;
+            this.exportDatabaseMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.exportToXMLFileMenuItem});
+            this.exportDatabaseMenuItem.Text = "Export";
+            // 
+            // exportToXMLFileMenuItem
+            // 
+            this.exportToXMLFileMenuItem.Index = 0;
+            this.exportToXMLFileMenuItem.Text = "XML File...";
+            this.exportToXMLFileMenuItem.Click += new System.EventHandler(this.exportToXMLFileMenuItem_Click);
             // 
             // menuItem11
             // 
@@ -231,10 +255,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 491);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Menu = this.mainMenu;
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MainWindow";
+            this.Text = "Enigma-Pro";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWindow_FormClosed);
             this.SizeChanged += new System.EventHandler(this.MainWindow_SizeChanged);
             this.ResumeLayout(false);
 
@@ -250,8 +276,8 @@
         private System.Windows.Forms.MenuItem saveDBMenuItem;
         private System.Windows.Forms.MenuItem saveAsDBMenuItem;
         private System.Windows.Forms.MenuItem menuItem8;
-        private System.Windows.Forms.MenuItem changeMasterKeyMenuItem;
-        private System.Windows.Forms.MenuItem exportToCSVFileMenuItem;
+        private System.Windows.Forms.MenuItem importDatabaseMenuItem;
+        private System.Windows.Forms.MenuItem exportDatabaseMenuItem;
         private System.Windows.Forms.MenuItem menuItem11;
         private System.Windows.Forms.MenuItem quitMenuItem;
         private System.Windows.Forms.MenuItem entriesMenuItem;
@@ -265,6 +291,8 @@
         private System.Windows.Forms.MenuItem helpMenuItem;
         private System.Windows.Forms.MenuItem aboutMenuItem;
         private System.Windows.Forms.MenuItem duplicateEntryMenuItem;
+        private System.Windows.Forms.MenuItem importToXMLFileMenuItem;
+        private System.Windows.Forms.MenuItem exportToXMLFileMenuItem;
     }
 }
 

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Enigma.Cryptography;
+using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -9,12 +11,13 @@ namespace enigma_pro
     public class DialogManager
     {
         private const int mMinimumColumnWidth = 60;
-        private static int mID;
-        private static bool mIsPasswordShown = false;
+        private static bool mIsPasswordShown;
+        private static bool _mKeySet;
+        private static string _mKeyPath, _mKeyPathSave;
 
         // Add Label
         private Label mCustomLabel;
-        
+
         // Add / Edit Entry
         private Form mEntryDlg;
         private Label mTitleLbl;
@@ -32,6 +35,14 @@ namespace enigma_pro
         private Button mShowPasswordBtn;
         private Button mConfirmEntryBtn;
         private Button mCancelBtn;
+
+        // Change Master-Key Dialog
+        private Form mMasterKeyForm;
+        private Label mKeyLabel;
+        private ComboBox mKeyFileComboBox;
+        private Button mKeyFileLocationBtn;
+        private Button mSetKeyBtn;
+        private Button mCancelKeyBtn;
 
         // About-Dialog Components
         private Form mAboutDlg;
@@ -51,18 +62,12 @@ namespace enigma_pro
         private ToolStripMenuItem mEditViewEntryToolStripMenuItem;
         private ToolStripMenuItem mDuplicateEntryToolStripMenuItem;
         private ToolStripMenuItem mDeleteEntryToolStripMenuItem;
-        private ColumnHeader mColumnID;
         private ColumnHeader mColumnTitle;
         private ColumnHeader mColumnUsername;
         private ColumnHeader mColumnPassword;
         private ColumnHeader mColumnURL;
         private ColumnHeader mColumnNotes;
 
-        public int MID
-        {
-            get { return mID; }
-            set { mID = value; }
-        }
         public Label MLabel
         {
             get { return mCustomLabel; }
@@ -78,6 +83,13 @@ namespace enigma_pro
             get { return mColumnNotes; }
             set { mColumnNotes = value; }
         }
+
+        public static bool MKeySet
+        {
+            get { return _mKeySet; }
+            set { _mKeySet = value; }
+        }
+
         //------------------------------------------------------------------------------------
         [DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
         public static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
@@ -85,6 +97,10 @@ namespace enigma_pro
         {
             Uri uriResult;
             return Uri.TryCreate(URLInput, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+        public static void SetMenuItemProperty(MenuItem menuItem, bool Toggle)
+        {
+            menuItem.Enabled = Toggle;
         }
         public static void AddNewPicture(Form Window, Size ImageSize, string ImagePath)
         {
@@ -95,14 +111,21 @@ namespace enigma_pro
 
             Window.Controls.Add(pictureBox);
         }
+        public static string GetKeyFilePathSave()
+        {
+            return _mKeyPathSave;
+        }
+        public static string GetKeyFilePath()
+        {
+            return _mKeyPath;
+        }
         public void FitColumnWidth()
         {
-            this.mColumnID.Width = -2;
-            this.mColumnTitle.Width = -2;
-            this.mColumnUsername.Width = -2;
-            this.mColumnPassword.Width = -2;
-            this.mColumnURL.Width = -2;
-            this.mColumnNotes.Width = -2;
+            mColumnTitle.Width = -2;
+            mColumnUsername.Width = -2;
+            mColumnPassword.Width = -2;
+            mColumnURL.Width = -2;
+            mColumnNotes.Width = -2;
         }
         public void FillListViewItemColors()
         {
@@ -115,8 +138,8 @@ namespace enigma_pro
 
             foreach (ListViewItem item in selectedLVItem)
             {
-                if (!string.IsNullOrEmpty(item.SubItems[2].Text))
-                    Clipboard.SetText(item.SubItems[2].Text);
+                if (!string.IsNullOrEmpty(item.SubItems[1].Text))
+                    Clipboard.SetText(item.SubItems[1].Text);
             }
         }
         public void CopyPasswordToClipboard()
@@ -125,18 +148,18 @@ namespace enigma_pro
 
             foreach (ListViewItem item in selectedLVItem)
             {
-                if (!string.IsNullOrEmpty(item.SubItems[3].Text))
-                    Clipboard.SetText(item.SubItems[3].Text);
+                if (!string.IsNullOrEmpty(item.SubItems[2].Text))
+                    Clipboard.SetText(item.SubItems[2].Text);
             }
         }
-        public void OpenURL()
+        public void OpenUrl()
         {
             ListView.SelectedListViewItemCollection selectedLVItem = mLView.SelectedItems;
 
             foreach (ListViewItem item in selectedLVItem)
             {
-                if (CheckURLValid(item.SubItems[4].Text))
-                    System.Diagnostics.Process.Start(item.SubItems[4].Text);
+                if (CheckURLValid(item.SubItems[3].Text))
+                    System.Diagnostics.Process.Start(item.SubItems[3].Text);
             }
         }
         public void DeleteSelectedEntry()
@@ -144,15 +167,15 @@ namespace enigma_pro
             ListView listview = mLView;
             foreach (ListViewItem item in listview.SelectedItems)
             {
-                DialogResult dialogResult = MessageBox.Show(string.Format("Are you sure you want to delete the entry \"{0}\"?", item.SubItems[1].Text), "Delete?",
-                                                                                                                            MessageBoxButtons.OKCancel,
-                                                                                                                            MessageBoxIcon.Question,
-                                                                                                                            MessageBoxDefaultButton.Button1);
+                DialogResult dialogResult = MessageBox.Show(
+                    $"Are you sure you want to delete the entry \"{item.SubItems[0].Text}\"?", @"Delete?", MessageBoxButtons.OKCancel,
+                                                                                                          MessageBoxIcon.Question,
+                                                                                                          MessageBoxDefaultButton.Button1);
                 if (dialogResult == DialogResult.OK)
                     item.Remove();
             }
 
-            this.FillListViewItemColors();
+            FillListViewItemColors();
         }
         public void DuplicateEntry()
         {
@@ -171,18 +194,17 @@ namespace enigma_pro
                 {
                     if (!string.IsNullOrEmpty(item.SubItems[i].Text))
                     {
-                        Title = item.SubItems[1].Text;
-                        Username = item.SubItems[2].Text;
-                        Password = item.SubItems[3].Text;
-                        URL = item.SubItems[4].Text;
-                        Notes = item.SubItems[5].Text;
+                        Title = item.SubItems[0].Text;
+                        Username = item.SubItems[1].Text;
+                        Password = item.SubItems[2].Text;
+                        URL = item.SubItems[3].Text;
+                        Notes = item.SubItems[4].Text;
                     }
                 }
             }
 
-            ListViewItem LVItems = new ListViewItem(mID.ToString());
-            mID++;
-            LVItems.SubItems.Add(Title);
+            ListViewItem LVItems = new ListViewItem(Title);
+
             LVItems.SubItems.Add(Username);
             LVItems.SubItems.Add(Password);
             LVItems.SubItems.Add(URL);
@@ -190,8 +212,8 @@ namespace enigma_pro
 
             mLView.Items.Add(LVItems);
 
-            this.FitColumnWidth();
-            this.FillListViewItemColors();
+            FitColumnWidth();
+            FillListViewItemColors();
         }
         public void AddNewLabel(Form Window, string Caption)
         {
@@ -218,6 +240,7 @@ namespace enigma_pro
             mAboutDlg.Text = "About enigma-pro";
             mAboutDlg.StartPosition = FormStartPosition.CenterScreen;
             mAboutDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+            mAboutDlg.ShowInTaskbar = false;
             mAboutDlg.MaximizeBox = false;
             mAboutDlg.MinimizeBox = false;
             mAboutDlg.HelpButton = true;
@@ -226,7 +249,6 @@ namespace enigma_pro
             // Close Button
             mCloseBtn.Location = new Point(220, 200);
             mCloseBtn.Text = "Close";
-            mCloseBtn.Click += new EventHandler(OnCloseBtnClicked);
 
             // Info Label
             mInfoLbl.Location = new Point(5, 80);
@@ -273,7 +295,6 @@ namespace enigma_pro
             mDuplicateEntryToolStripMenuItem = new ToolStripMenuItem();
             mDeleteEntryToolStripMenuItem = new ToolStripMenuItem();
 
-            mColumnID = new ColumnHeader();
             mColumnTitle = new ColumnHeader();
             mColumnUsername = new ColumnHeader();
             mColumnPassword = new ColumnHeader();
@@ -298,7 +319,7 @@ namespace enigma_pro
             mOpenURLToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.U);
             mOpenURLToolStripMenuItem.Size = new Size(199, 22);
             mOpenURLToolStripMenuItem.Text = "Open URL";
-            mOpenURLToolStripMenuItem.Click += new EventHandler(OnOpenURLToolStripMenuItemClicked);
+            mOpenURLToolStripMenuItem.Click += new EventHandler(OnOpenUrlToolStripMenuItemClicked);
 
             mAddEntryToolStripMenuItem.Image = Properties.Resources.entry_new;
             mAddEntryToolStripMenuItem.ShortcutKeys = (Keys.Control | Keys.Y);
@@ -323,7 +344,7 @@ namespace enigma_pro
             mDeleteEntryToolStripMenuItem.Size = new Size(199, 22);
             mDeleteEntryToolStripMenuItem.Text = "Delete Entry";
             mDeleteEntryToolStripMenuItem.Click += new EventHandler(OnDeleteEntryToolStripMenuItemClicked);
-            
+
             mContextMenu.Size = new Size(200, 142);
             mContextMenu.Opening += new CancelEventHandler(OnContextMenuOpening);
             mContextMenu.Items.AddRange(new ToolStripItem[]
@@ -338,8 +359,6 @@ namespace enigma_pro
                 mDeleteEntryToolStripMenuItem
             });
 
-            mColumnID.Text = "ID";
-            mColumnID.Width = 40;
             mColumnTitle.Text = "Title";
             mColumnTitle.Width = 40;
             mColumnUsername.Text = "Username";
@@ -357,7 +376,6 @@ namespace enigma_pro
             mLView.Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right);
             mLView.Columns.AddRange(new ColumnHeader[]
             {
-                mColumnID,
                 mColumnTitle,
                 mColumnUsername,
                 mColumnPassword,
@@ -368,7 +386,7 @@ namespace enigma_pro
             mLView.FullRowSelect = true;
             mLView.MultiSelect = true;
             mLView.UseCompatibleStateImageBehavior = false;
-            
+
             Window.Controls.Add(mLView);
         }
         public void InitializeAddNewEntry()
@@ -399,6 +417,7 @@ namespace enigma_pro
             mEntryDlg.Text = "Add Entry";
             mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
             mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+            mEntryDlg.ShowInTaskbar = false;
             mEntryDlg.MaximizeBox = false;
             mEntryDlg.MinimizeBox = false;
             mEntryDlg.AcceptButton = mConfirmEntryBtn;
@@ -471,7 +490,6 @@ namespace enigma_pro
             // Cancel Button
             mCancelBtn.Location = new Point(390, 320);
             mCancelBtn.Text = "Cancel";
-            mCancelBtn.Click += new EventHandler(OnCancelEntryBtnClicked);
 
             mEntryDlg.Controls.AddRange(new Control[]
             {
@@ -522,12 +540,12 @@ namespace enigma_pro
 
             foreach (ListViewItem item in selectedLVItem)
             {
-                mTitleTBox.Text = item.SubItems[1].Text;
-                mUserNameTBox.Text = item.SubItems[2].Text;
-                mPasswordTBox.Text = item.SubItems[3].Text;
-                mPasswordRptTBox.Text = item.SubItems[3].Text;
-                mURLTBox.Text = item.SubItems[4].Text;
-                mNotesTBox.Text = item.SubItems[5].Text;
+                mTitleTBox.Text = item.SubItems[0].Text;
+                mUserNameTBox.Text = item.SubItems[1].Text;
+                mPasswordTBox.Text = item.SubItems[2].Text;
+                mPasswordRptTBox.Text = item.SubItems[2].Text;
+                mURLTBox.Text = item.SubItems[3].Text;
+                mNotesTBox.Text = item.SubItems[4].Text;
             }
 
             // Add Entry Dialog
@@ -535,6 +553,7 @@ namespace enigma_pro
             mEntryDlg.Text = "Edit Entry";
             mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
             mEntryDlg.FormBorderStyle = FormBorderStyle.FixedDialog;
+            mEntryDlg.ShowInTaskbar = false;
             mEntryDlg.MaximizeBox = false;
             mEntryDlg.MinimizeBox = false;
             mEntryDlg.AcceptButton = mConfirmEntryBtn;
@@ -607,7 +626,6 @@ namespace enigma_pro
             // Cancel Button
             mCancelBtn.Location = new Point(390, 320);
             mCancelBtn.Text = "Cancel";
-            mCancelBtn.Click += new EventHandler(OnCancelEntryBtnClicked);
 
             mEntryDlg.Controls.AddRange(new Control[]
             {
@@ -632,34 +650,156 @@ namespace enigma_pro
             if (mLView.SelectedItems.Count > 0)
                 mEntryDlg.ShowDialog();
         }
+        public void InitializeSetKeyFile()
+        {
+            mMasterKeyForm = new Form();
+
+            mKeyLabel = new Label();
+            mKeyFileComboBox = new ComboBox();
+            mKeyFileLocationBtn = new Button();
+            mSetKeyBtn = new Button();
+            mCancelKeyBtn = new Button();
+
+            // Change Master-Key Dialog
+            mMasterKeyForm.Size = new Size(340, 190);
+            mMasterKeyForm.Text = "Create new Key File";
+            mMasterKeyForm.StartPosition = FormStartPosition.CenterScreen;
+            mMasterKeyForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            mMasterKeyForm.ShowInTaskbar = false;
+            mMasterKeyForm.MaximizeBox = false;
+            mMasterKeyForm.MinimizeBox = false;
+            mMasterKeyForm.AcceptButton = mSetKeyBtn;
+            mMasterKeyForm.CancelButton = mCancelKeyBtn;
+
+            // Key Label
+            mKeyLabel.Location = new Point(5, 60);
+            mKeyLabel.Font = new Font("Arial", mKeyLabel.Font.Size, FontStyle.Bold);
+            mKeyLabel.Text = "Key File:";
+            mKeyLabel.AutoSize = true;
+
+            // Key File ComboBox
+            mKeyFileComboBox.Location = new Point(7, 75);
+            mKeyFileComboBox.Size = new Size(280, 20);
+            mKeyFileComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            mKeyFileComboBox.Items.Add(@"F:\pwsafe.enigma"); // TODO: Get All drive directories
+            mKeyFileComboBox.SelectedIndex = 0;
+
+            // Key File Location Button
+            mKeyFileLocationBtn.Location = new Point(290, 74);
+            mKeyFileLocationBtn.Size = new Size(24, 24);
+            mKeyFileLocationBtn.Image = Image.FromFile(@"share/icons/16x16/file_save_as.png");
+            mKeyFileLocationBtn.Click += new EventHandler(OnSetKeyFileBtnClicked);
+
+            // Set Key Button
+            mSetKeyBtn.Location = new Point(160, 120);
+            mSetKeyBtn.Text = "OK";
+            mSetKeyBtn.Click += new EventHandler(OnSaveKeyFileBtnClicked);
+
+            // Cancel Button
+            mCancelKeyBtn.Location = new Point(240, 120);
+            mCancelKeyBtn.Text = "Cancel";
+
+            mMasterKeyForm.Controls.AddRange(new Control[]
+            {
+                mKeyLabel,
+                mKeyFileComboBox,
+                mKeyFileLocationBtn,
+                mSetKeyBtn,
+                mCancelKeyBtn
+            });
+
+            AddNewPicture(mMasterKeyForm, new Size(475, 50), @"share/banners/enter-key-banner.png");
+            mMasterKeyForm.ShowDialog();
+        }
+        public void InitializeGetKeyFile()
+        {
+            mMasterKeyForm = new Form();
+
+            mKeyLabel = new Label();
+            mKeyFileComboBox = new ComboBox();
+            mKeyFileLocationBtn = new Button();
+            mSetKeyBtn = new Button();
+            mCancelKeyBtn = new Button();
+
+            // Change Master-Key Dialog
+            mMasterKeyForm.Size = new Size(340, 190);
+            mMasterKeyForm.Text = "Open Database";
+            mMasterKeyForm.StartPosition = FormStartPosition.CenterScreen;
+            mMasterKeyForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            mMasterKeyForm.ShowInTaskbar = false;
+            mMasterKeyForm.MaximizeBox = false;
+            mMasterKeyForm.MinimizeBox = false;
+            mMasterKeyForm.AcceptButton = mSetKeyBtn;
+            mMasterKeyForm.CancelButton = mCancelKeyBtn;
+
+            // Key Label
+            mKeyLabel.Location = new Point(5, 60);
+            mKeyLabel.Font = new Font("Arial", mKeyLabel.Font.Size, FontStyle.Bold);
+            mKeyLabel.Text = "Key File:";
+            mKeyLabel.AutoSize = true;
+
+            // Key File ComboBox
+            mKeyFileComboBox.Location = new Point(7, 75);
+            mKeyFileComboBox.Size = new Size(280, 20);
+            mKeyFileComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            mKeyFileComboBox.Items.Add(@"F:\pwsafe.enigma"); // TODO: Get All drive directories
+            mKeyFileComboBox.SelectedIndex = 0;
+
+            // Key File Location Button
+            mKeyFileLocationBtn.Location = new Point(290, 74);
+            mKeyFileLocationBtn.Size = new Size(24, 24);
+            mKeyFileLocationBtn.Image = Image.FromFile(@"share/icons/16x16/file_save_as.png");
+            mKeyFileLocationBtn.Click += new EventHandler(OnGetKeyFileBtnClicked);
+
+            // Set Key Button
+            mSetKeyBtn.Location = new Point(160, 120);
+            mSetKeyBtn.Text = "OK";
+            mSetKeyBtn.Click += new EventHandler(OnLoadKeyFileBtnClicked);
+
+            // Cancel Button
+            mCancelKeyBtn.Location = new Point(240, 120);
+            mCancelKeyBtn.Text = "Cancel";
+
+            mMasterKeyForm.Controls.AddRange(new Control[]
+            {
+                mKeyLabel,
+                mKeyFileComboBox,
+                mKeyFileLocationBtn,
+                mSetKeyBtn,
+                mCancelKeyBtn
+            });
+
+            AddNewPicture(mMasterKeyForm, new Size(475, 50), @"share/banners/enter-key-banner.png");
+            mMasterKeyForm.ShowDialog();
+        }
         //------------------------------------------------------------------------------------
         private void OnCopyUsernameToolStripMenuItemClicked(object sender, EventArgs e)
         {
-            this.CopyUsernameToClipboard();
+            CopyUsernameToClipboard();
         }
         private void OnCopyPasswordToolStripMenuItemClicked(object sender, EventArgs e)
         {
-            this.CopyPasswordToClipboard();
+            CopyPasswordToClipboard();
         }
-        private void OnOpenURLToolStripMenuItemClicked(object sender, EventArgs e)
+        private void OnOpenUrlToolStripMenuItemClicked(object sender, EventArgs e)
         {
-            this.OpenURL();
+            OpenUrl();
         }
         private void OnAddEntryToolStripMenuItemClicked(object sender, EventArgs e)
         {
-            this.InitializeAddNewEntry();
+            InitializeAddNewEntry();
         }
         private void OnEditEntryToolStripMenuItemClicked(object sender, EventArgs e)
         {
-            this.InitializeEditEntry();
+            InitializeEditEntry();
         }
         private void OnDuplicateEntryToolStripMenuItemClicked(object sender, EventArgs e)
         {
-            this.DuplicateEntry();
+            DuplicateEntry();
         }
         private void OnDeleteEntryToolStripMenuItemClicked(object sender, EventArgs e)
         {
-            this.DeleteSelectedEntry();
+            DeleteSelectedEntry();
         }
         private void OnPasswordMaskClicked(object sender, EventArgs e)
         {
@@ -728,13 +868,51 @@ namespace enigma_pro
             mLinkLbl.LinkVisited = true;
             System.Diagnostics.Process.Start(mLinkLbl.Text);
         }
-        private void OnCloseBtnClicked(object sender, EventArgs e)
+        private void OnSetKeyFileBtnClicked(object sender, EventArgs e)
         {
-            mAboutDlg.Close();
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                Filter = "Key Files|*.enigma",
+                Title = "Save as..."
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                mKeyFileComboBox.Items[0] = saveFileDialog.FileName;
         }
-        private void OnCancelEntryBtnClicked(object sender, EventArgs e)
+        private void OnGetKeyFileBtnClicked(object sender, EventArgs e)
         {
-            mEntryDlg.Close();
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Key File|*.enigma",
+                Title = "Open..."
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+                mKeyFileComboBox.Items[0] = openFileDialog.FileName;
+        }
+        private void OnSaveKeyFileBtnClicked(object sender, EventArgs e)
+        {
+            _mKeyPathSave = mKeyFileComboBox.Items[0].ToString();
+            StreamWriter fsSecretKey = new StreamWriter(_mKeyPathSave);
+
+            string sSecretKey = Cryptography.GenerateKey();
+            // For additional security Pin the key
+            // A new GCHandle that protects the object from garbage collection.
+            // This GCHandle must be released with Free when it is no longer needed.
+            GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned);
+            fsSecretKey.WriteLine(sSecretKey);
+            fsSecretKey.Close();
+            // Free the key from memory
+            Cryptography.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
+            gch.Free();
+            _mKeySet = true;
+            mMasterKeyForm.Close();
+        }
+        private void OnLoadKeyFileBtnClicked(object sender, EventArgs e)
+        {
+            _mKeyPath = mKeyFileComboBox.Items[0].ToString();
+
+            mMasterKeyForm.Close();
         }
         private void OnAddEntryBtnClicked(object sender, EventArgs e)
         {
@@ -744,7 +922,7 @@ namespace enigma_pro
                 mEntryDlg.Close();
             }
             else
-                MessageBox.Show("Password and repeated password don't match!", this.mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Password and repeated password don't match!", mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         private void OnEditEntryBtnClicked(object sender, EventArgs e)
         {
@@ -754,24 +932,28 @@ namespace enigma_pro
                 mEntryDlg.Close();
             }
             else
-                MessageBox.Show("Password and repeated password don't match!", this.mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Password and repeated password don't match!", mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         //------------------------------------------------------------------------------------
         private void AddNewEntry(string Title, string Username, string Password, string URL, string Notes)
         {
-            ListViewItem LVItems = new ListViewItem(MID.ToString());
-            mID++;
+            ListViewItem LVItems = new ListViewItem(Title);
 
-            LVItems.SubItems.Add(Title);
             LVItems.SubItems.Add(Username);
             LVItems.SubItems.Add(Password);
-            LVItems.SubItems.Add(URL);
+            if (URL.StartsWith("http://") || URL.StartsWith("https://"))
+                LVItems.SubItems.Add(URL);
+            else
+            {
+                string formattedUrl = URL.Insert(0, "http://");
+                LVItems.SubItems.Add(formattedUrl);
+            }
             LVItems.SubItems.Add(Notes);
 
             mLView.Items.Add(LVItems);
 
-            this.FitColumnWidth();
-            this.FillListViewItemColors();
+            FitColumnWidth();
+            FillListViewItemColors();
         }
         private void EditEntry(string Title, string Username, string Password, string URL, string Notes)
         {
@@ -779,15 +961,21 @@ namespace enigma_pro
 
             foreach (ListViewItem item in selectedLVItem)
             {
-                item.SubItems[1].Text = Title;
-                item.SubItems[2].Text = Username;
-                item.SubItems[3].Text = Password;
-                item.SubItems[4].Text = URL;
-                item.SubItems[5].Text = Notes;
+                item.SubItems[0].Text = Title;
+                item.SubItems[1].Text = Username;
+                item.SubItems[2].Text = Password;
+                if (URL.StartsWith("http://") || URL.StartsWith("https://"))
+                    item.SubItems[3].Text = URL;
+                else
+                {
+                    string FormattedURL = URL.Insert(0, "http://");
+                    item.SubItems[3].Text = FormattedURL;
+                }
+                item.SubItems[4].Text = Notes;
             }
 
-            this.FitColumnWidth();
-            this.FillListViewItemColors();
+            FitColumnWidth();
+            FillListViewItemColors();
         }
     }
 }
