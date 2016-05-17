@@ -12,7 +12,7 @@ namespace enigma_pro
     {
         private const int _mMinimumColumnWidth = 60;
         private static bool _mIsPasswordShown;
-        private static bool _mKeySet;
+        private static bool _mKeySet, _mKeyGet;
         private static string _mKeyPath, _mKeyPathSave;
 
         // Add Label
@@ -89,6 +89,11 @@ namespace enigma_pro
             get { return _mKeySet; }
             set { _mKeySet = value; }
         }
+        public static bool MKeyGet
+        {
+            get { return _mKeyGet; }
+            set { _mKeyGet = value; }
+        }
 
         //------------------------------------------------------------------------------------
         [DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
@@ -104,10 +109,12 @@ namespace enigma_pro
         }
         public static void AddNewPicture(Form window, Size imageSize, string imagePath)
         {
-            PictureBox pictureBox = new PictureBox();
-            pictureBox.ImageLocation = imagePath;
-            pictureBox.Location = new Point(0, 0);
-            pictureBox.Size = imageSize;
+            PictureBox pictureBox = new PictureBox
+            {
+                ImageLocation = imagePath,
+                Location = new Point(0, 0),
+                Size = imageSize
+            };
 
             window.Controls.Add(pictureBox);
         }
@@ -134,9 +141,7 @@ namespace enigma_pro
         }
         public void CopyUsernameToClipboard()
         {
-            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
-
-            foreach (ListViewItem item in selectedLVItem)
+            foreach (ListViewItem item in _mLView.SelectedItems)
             {
                 if (!string.IsNullOrEmpty(item.SubItems[1].Text))
                     Clipboard.SetText(item.SubItems[1].Text);
@@ -144,9 +149,7 @@ namespace enigma_pro
         }
         public void CopyPasswordToClipboard()
         {
-            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
-
-            foreach (ListViewItem item in selectedLVItem)
+            foreach (ListViewItem item in _mLView.SelectedItems)
             {
                 if (!string.IsNullOrEmpty(item.SubItems[2].Text))
                     Clipboard.SetText(item.SubItems[2].Text);
@@ -154,9 +157,7 @@ namespace enigma_pro
         }
         public void OpenUrl()
         {
-            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
-
-            foreach (ListViewItem item in selectedLVItem)
+            foreach (ListViewItem item in _mLView.SelectedItems)
             {
                 if (CheckUrlValid(item.SubItems[3].Text))
                     System.Diagnostics.Process.Start(item.SubItems[3].Text);
@@ -164,8 +165,7 @@ namespace enigma_pro
         }
         public void DeleteSelectedEntry()
         {
-            ListView listview = _mLView;
-            foreach (ListViewItem item in listview.SelectedItems)
+            foreach (ListViewItem item in _mLView.SelectedItems)
             {
                 DialogResult dialogResult = MessageBox.Show(
                     $"Are you sure you want to delete the entry \"{item.SubItems[0].Text}\"?", @"Delete?", MessageBoxButtons.OKCancel,
@@ -180,49 +180,46 @@ namespace enigma_pro
         public void DuplicateEntry()
         {
             // Get Selected Entry Items
-            string Title = string.Empty;
-            string Username = string.Empty;
-            string Password = string.Empty;
-            string URL = string.Empty;
-            string Notes = string.Empty;
-
-            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
-
-            foreach (ListViewItem item in selectedLVItem)
+            string title = string.Empty;
+            string username = string.Empty;
+            string password = string.Empty;
+            string url = string.Empty;
+            string notes = string.Empty;
+            
+            foreach (ListViewItem item in _mLView.SelectedItems)
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    if (!string.IsNullOrEmpty(item.SubItems[i].Text))
-                    {
-                        Title = item.SubItems[0].Text;
-                        Username = item.SubItems[1].Text;
-                        Password = item.SubItems[2].Text;
-                        URL = item.SubItems[3].Text;
-                        Notes = item.SubItems[4].Text;
-                    }
+                    if (string.IsNullOrEmpty(item.SubItems[i].Text)) continue;
+                    title = item.SubItems[0].Text;
+                    username = item.SubItems[1].Text;
+                    password = item.SubItems[2].Text;
+                    url = item.SubItems[3].Text;
+                    notes = item.SubItems[4].Text;
                 }
             }
 
-            ListViewItem LVItems = new ListViewItem(Title);
+            ListViewItem lvItems = new ListViewItem(title);
 
-            LVItems.SubItems.Add(Username);
-            LVItems.SubItems.Add(Password);
-            LVItems.SubItems.Add(URL);
-            LVItems.SubItems.Add(Notes);
+            lvItems.SubItems.Add(username);
+            lvItems.SubItems.Add(password);
+            lvItems.SubItems.Add(url);
+            lvItems.SubItems.Add(notes);
 
-            _mLView.Items.Add(LVItems);
+            _mLView.Items.Add(lvItems);
 
             FitColumnWidth();
             FillListViewItemColors();
         }
         public void AddNewLabel(Form window, string caption)
         {
-            _mCustomLabel = new Label();
-
-            _mCustomLabel.TextAlign = ContentAlignment.MiddleCenter;
-            _mCustomLabel.Dock = DockStyle.Fill;
-            _mCustomLabel.Text = caption;
-            _mCustomLabel.AutoSize = false;
+            _mCustomLabel = new Label
+            {
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Fill,
+                Text = caption,
+                AutoSize = false
+            };
 
             window.Controls.Add(_mCustomLabel);
         }
@@ -537,10 +534,8 @@ namespace enigma_pro
             _mShowPasswordBtn = new Button();
             _mConfirmEntryBtn = new Button();
             _mCancelBtn = new Button();
-
-            ListView.SelectedListViewItemCollection selectedLVItem = _mLView.SelectedItems;
-
-            foreach (ListViewItem item in selectedLVItem)
+            
+            foreach (ListViewItem item in _mLView.SelectedItems)
             {
                 _mTitleTBox.Text = item.SubItems[0].Text;
                 _mUserNameTBox.Text = item.SubItems[1].Text;
@@ -550,7 +545,7 @@ namespace enigma_pro
                 _mNotesTBox.Text = item.SubItems[4].Text;
             }
 
-            // Add Entry Dialog
+            // Edit Entry Dialog
             _mEntryDlg.Size = new Size(490, 390);
             _mEntryDlg.Text = "Edit Entry";
             _mEntryDlg.StartPosition = FormStartPosition.CenterScreen;
@@ -662,7 +657,7 @@ namespace enigma_pro
             _mSetKeyBtn = new Button();
             _mCancelKeyBtn = new Button();
 
-            // Change Master-Key Dialog
+            // Set Key-File Dialog
             _mMasterKeyForm.Size = new Size(340, 190);
             _mMasterKeyForm.Text = "Create new Key File";
             _mMasterKeyForm.StartPosition = FormStartPosition.CenterScreen;
@@ -859,7 +854,6 @@ namespace enigma_pro
             foreach (ListViewItem item in _mLView.Items)
                 item.Selected = true;
         }
-
         private void OnListViewColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
         {
             if (_mLView.Columns[e.ColumnIndex].Width < _mMinimumColumnWidth)
@@ -879,8 +873,8 @@ namespace enigma_pro
                 Title = "Save as..."
             };
 
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                _mKeyFileComboBox.Items[0] = saveFileDialog.FileName;
+            if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+            _mKeyFileComboBox.Items[0] = saveFileDialog.FileName;
         }
         private void OnGetKeyFileBtnClicked(object sender, EventArgs e)
         {
@@ -890,38 +884,19 @@ namespace enigma_pro
                 Title = "Open..."
             };
 
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-                _mKeyFileComboBox.Items[0] = openFileDialog.FileName;
+            if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+            _mKeyFileComboBox.Items[0] = openFileDialog.FileName;
         }
         private void OnSaveKeyFileBtnClicked(object sender, EventArgs e)
         {
-            _mKeyPathSave = _mKeyFileComboBox.SelectedItem.ToString();
-            try
-            {
-                StreamWriter fsSecretKey = new StreamWriter(_mKeyPathSave);
-                string sSecretKey = Cryptography.GenerateKey();
-                // For additional security Pin the key
-                // A new GCHandle that protects the object from garbage collection.
-                // This GCHandle must be released with Free when it is no longer needed.
-                GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned);
-                fsSecretKey.WriteLine(sSecretKey);
-                fsSecretKey.Close();
-                // Free the key from memory
-                Cryptography.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
-                gch.Free();
-            }
-            catch (UnauthorizedAccessException exception)
-            {
-                MessageBox.Show(exception.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Warning); return;
-            }
-
-            _mKeySet = true;
+            SaveKeyFile();
             _mMasterKeyForm.Close();
         }
         private void OnLoadKeyFileBtnClicked(object sender, EventArgs e)
         {
             _mKeyPath = _mKeyFileComboBox.SelectedItem.ToString();
 
+            _mKeyGet = true;
             _mMasterKeyForm.Close();
         }
         private void OnAddEntryBtnClicked(object sender, EventArgs e)
@@ -945,6 +920,27 @@ namespace enigma_pro
                 MessageBox.Show("Password and repeated password don't match!", _mEntryDlg.Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         //------------------------------------------------------------------------------------
+        private void SaveKeyFile()
+        {
+            _mKeyPathSave = _mKeyFileComboBox.SelectedItem.ToString();
+            try
+            {
+                string sSecretKey = Cryptography.GenerateKey();
+                GCHandle gch = GCHandle.Alloc(sSecretKey, GCHandleType.Pinned);
+                StreamWriter fsSecretKey = new StreamWriter(_mKeyPathSave);
+                fsSecretKey.WriteLine(sSecretKey);
+                fsSecretKey.Close();
+                // free the key from memory
+                Cryptography.ZeroMemory(gch.AddrOfPinnedObject(), sSecretKey.Length * 2);
+                gch.Free();
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                MessageBox.Show(exception.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Warning); return;
+            }
+
+            _mKeySet = true;
+        }
         private void AddNewEntry(string title, string username, string password, string url, string notes)
         {
             ListViewItem lvItems = new ListViewItem(title);
@@ -967,9 +963,7 @@ namespace enigma_pro
         }
         private void EditEntry(string title, string username, string password, string url, string notes)
         {
-            ListView.SelectedListViewItemCollection selectedLvItem = _mLView.SelectedItems;
-
-            foreach (ListViewItem item in selectedLvItem)
+            foreach (ListViewItem item in _mLView.SelectedItems)
             {
                 item.SubItems[0].Text = title;
                 item.SubItems[1].Text = username;

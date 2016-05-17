@@ -44,8 +44,8 @@ namespace enigma_pro
 
         private void MainWindow_SizeChanged(object sender, EventArgs e)
         {
-            if (_mListView != null)
-                _mListView.MColumnNotes.Width = -2;
+            if (_mListView == null) return;
+            _mListView.MColumnNotes.Width = -2;
         }
 
         private void newDBMenuItem_Click(object sender, EventArgs e)
@@ -56,6 +56,7 @@ namespace enigma_pro
             if (!DialogManager.MKeySet) return;
             _mListView = new DialogManager();
             DatabaseHandler.NewDatabase(_mListView, this);
+
             _mDialog.MLabel.Visible = false;
             ReEnableMenuItems();
             DialogManager.SetMenuItemProperty(newDBMenuItem, false);
@@ -188,8 +189,11 @@ namespace enigma_pro
                     DialogManager.SetMenuItemProperty(newDBMenuItem, true);
                     _mDialog.MLabel.Visible = true;
                 }
+                
+                _mMasterKeyDlg = new DialogManager();
+                _mMasterKeyDlg?.InitializeGetKeyFile();
 
-                // Create new Database
+                if (!DialogManager.MKeyGet) return;
                 _mListView = new DialogManager();
                 DatabaseHandler.OpenDatabase(_mListView, this, openFileDialog);
 
